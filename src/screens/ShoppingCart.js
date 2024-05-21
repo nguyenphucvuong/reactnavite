@@ -40,10 +40,6 @@ const ShoppingCart = () => {
       size: 'M',
       img: 'https://pubcdn.ivymoda.com/files/news/2023/08/02/4534c5d0192bbc110f62a896f433eef0.png',
     })
-
-
-    // createOneData('Áo thun', 'Đen', 100000, 10, 'M', 'https://pubcdn.ivymoda.com/files/news/2023/08/02/4534c5d0192bbc110f62a896f433eef0.png')
-    console.log("chay")
   };
 
   const handleGetAllData = () => {
@@ -53,6 +49,7 @@ const ShoppingCart = () => {
   };
 
   const handleUpdateData = () => {
+    updateData('1');
 
   };
 

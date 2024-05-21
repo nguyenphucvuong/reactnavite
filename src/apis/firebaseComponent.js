@@ -10,13 +10,15 @@ const productRef = ref(db, "Product/");
 
 
 
-const updateData = () => {
+const updateData = (id) => {
     const updates = {};
     updates["Product/" + id] = {
-        id: id,
-        userName: name,
-        email: email,
-        imageUrl: imageUrl,
+        gia: gia,
+        img: img,
+        mau: mau,
+        size: size,
+        tensp: tensp,
+        soLuong: soLuong,
     };
     update(ref(db), updates)
         .then(() => {
@@ -40,9 +42,8 @@ const createOneData = ({ tensp, mau, gia, soLuong, size, img }) => {
 
 
     const key = push(child(dbRef, 'Product/')).key;
-    console.log(key)
-    const childDV = child(dbRef, 'Product/' + key);
-    console.log(childDV)
+
+
 
     const setDB = set(child(dbRef, "Product/" + key), {
         id: key,
