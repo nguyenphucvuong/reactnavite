@@ -1,0 +1,457 @@
+import * as React from "react";
+import { StyleSheet, View, Pressable, Text, FlatList, TextInput, Button, StatusBar, ScrollView, Alert } from "react-native"; // Import FlatList
+import { Image } from "expo-image";
+import { useNavigation } from "@react-navigation/native";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { Color, FontFamily, FontSize, Border } from "../../GlobalStyles";
+import { appInfo } from "../constains/appInfo";
+import { FlatlistItemsComponent } from "../component/FlatlistItemsComponent";
+import QLProduct from "../../QLProduct"; // Import lớp quản lý sản phẩm
+import Product from "../../Product";
+import Discount from "../../Discount";
+
+//dữ liệu tĩnh
+const qlProduct = new QLProduct();
+
+////dữ liệu giảm giá tĩnh
+const discounts = [
+  new Discount("a123", 30),
+  new Discount("a12", 50)
+];
+let totalPrice = qlProduct.getTotalValue();
+
+
+
+
+const OrderDetails = ({ route }) => {
+  const navigation = useNavigation();
+
+  //lấy dữ liệu từ trang trước đó
+  const { productList } = route.params;
+  qlProduct.arrPro = productList;
+  totalPrice = qlProduct.getTotalValue();
+
+  //mã giảm giá
+  const [discountCode, setDiscountCode] = React.useState("");
+  const [discountAmount, setDiscountAmount] = React.useState(0);
+
+  //thông tin địa chỉ
+  const [nameCus, setNameCus] = React.useState("");
+  const [addressCus, setAddressCus] = React.useState("");
+  const [phoneCus, setPhoneCus] = React.useState("");
+
+  const [isPaymentOnDelivery, setIsPaymentOnDelivery] = React.useState(false);
+
+
+  //hàm xử lý khi ấn vào áp dụng mã giảm giá
+  const applyDiscount = () => {
+    if (!discountCode) {
+      console.log("Vui lòng nhập mã giảm giá.");
+      return;
+    }
+
+    const discount = discounts.find(discount => discount.getCode() === discountCode);
+
+    if (discount) {
+      totalPrice = qlProduct.getTotalValue();
+      const percentage = discount.getPercentage();
+      const discountValue = totalPrice * percentage / 100;
+      setDiscountAmount(discountValue);
+      totalPrice -= discountValue; // Trừ số tiền giảm giá khỏi tổng tiền
+      console.log("Giảm giá:", discountValue);
+      console.log("Tổng tiền sau giảm giá:", totalPrice);
+    } else {
+      console.log("Mã giảm giá không hợp lệ");
+      totalPrice = qlProduct.getTotalValue();
+      setDiscountAmount(0);
+
+    }
+  };
+
+  //Hàm kiểm tra và xuất thông tin khi ấn nút đặt hàng
+  const checkPaymentInfo = () => {
+    if (!nameCus || !addressCus || !phoneCus) {
+      console.log("Vui lòng nhập đầy đủ thông tin địa chỉ thanh toán.");
+      return;
+    }
+
+    if (!isPaymentOnDelivery) {
+      console.log("Vui lòng chọn phương thức thanh toán.");
+      return;
+    }
+
+    // Tính toán và hiển thị thông tin thanh toán thành công
+    const paymentAmount = totalPrice - discountAmount;
+    Alert.alert('Đặt hàng thành công!', 'Đơn hàng sẽ sớm được giao')
+    console.log("Thanh toán thành công!");
+    console.log("Thông tin thanh toán:");
+    console.log("Họ và tên:", nameCus);
+    console.log("Địa chỉ:", addressCus);
+    console.log("Số điện thoại:", phoneCus);
+    console.log("Phương thức thanh toán:", isPaymentOnDelivery);
+    console.log("Số tiền phải thanh toán:", paymentAmount, "đ");
+    // Alert.alert('Đặt hàng thành công!', 'Đơn hàng trị giá ' + { paymentAmount } + ' của anh/chị ' + { nameCus } + ' sẽ sớm được vận chuyển')
+    // const alertt = 'Đơn hàng trị giá ' + { paymentAmount } + ' của anh/chị ' + { nameCus } + ' sẽ sớm được vận chuyển';
+    // Alert.alert('Đặt hàng thành công!', alertt)
+
+  };
+
+
+  return (
+    <View style={styles.container}>
+      {/* Title của trang */}
+      <View style={[styles.chiTietDathangInner]}>
+        <Text style={styles.chiTietDatHangText}>Chi tiết đặt hàng</Text>
+        <Pressable onPress={() => navigation.navigate("ShoppingCart")}>
+          <Image
+            style={styles.backIconBtn}
+            contentFit="cover"
+            source={require("../../assets/arrow-left.png")}
+          />
+        </Pressable>
+      </View>
+      {/* Text sản phẩm */}
+      <View style={styles.titleSanPhamInner}>
+        <Text style={styles.textTitleSanPham}>Sản Phẩm</Text>
+      </View>
+
+      <ScrollView style={styles.scrollContainer}>
+        {/* flatlist danh sách sản phẩm sau khi ấn mua ngay từ Shopping cart */}
+        <View style={styles.flatcontainer}>
+          <FlatList
+            data={qlProduct.arrPro}
+            renderItem={({ item }) => <FlatlistItemsComponent isDetail={true} item={item} />}
+            keyExtractor={(item) => item.masp}
+            contentContainerStyle={styles.flatListContainer}
+          />
+        </View>
+        {/* View của mã giảm giá */}
+        <View style={styles.discountContainer}>
+          <View style={styles.discountInfo}>
+            <Text style={styles.discountLabel}>Mã giảm giá</Text>
+            <TextInput
+              style={styles.discountInput}
+              value={discountCode}
+              placeholder="Nhập mã giảm giá"
+              onChangeText={(text) => setDiscountCode(text)}
+            />
+            <Text style={styles.discountDetail}>Giảm giá: {discountAmount}đ</Text>
+          </View>
+          <View style={styles.discountButtonContainer}>
+            <Button
+              title="Áp dụng"
+
+              color={Color.colorFirebrick}
+              onPress={applyDiscount} />
+          </View>
+        </View>
+
+
+        <View style={styles.priceContainer}>
+          <View style={styles.priceLeft}>
+            <Text style={styles.priceText}>Tiền hàng:</Text>
+            <Text style={styles.priceText}>Mã giảm giá:</Text>
+            <Text style={styles.priceText}>Tổng tiền:</Text>
+          </View>
+          <View style={styles.priceRight}>
+            <Text style={styles.priceText}>{totalPrice}đ</Text>
+            <Text style={styles.priceText}>{discountAmount}đ</Text>
+            <Text style={styles.priceText}>{totalPrice - discountAmount}đ</Text>
+          </View>
+        </View>
+
+        <View style={styles.paymentContainer}>
+          <Text style={styles.paymentTitle}>1. Địa chỉ thanh toán</Text>
+          <TextInput
+            style={styles.paymentInput}
+            placeholder="Họ và tên"
+            value={nameCus}
+            onChangeText={(text) => setNameCus(text)}
+          />
+          <TextInput
+            style={styles.paymentInput}
+            placeholder="Địa chỉ"
+            value={addressCus}
+            onChangeText={(text) => setAddressCus(text)}
+          />
+          <TextInput
+            style={styles.paymentInput}
+            placeholder="Số điện thoại"
+            keyboardType="numeric"
+            value={phoneCus}
+            onChangeText={(text) => setPhoneCus(text)}
+          />
+        </View>
+
+        <View style={styles.paymentMethodContainer}>
+          <View style={styles.paymentMethodInner}>
+            <Text style={styles.paymentTitle}>2. Phương thức thanh toán</Text>
+            <View style={styles.checkboxContainer}>
+              <Text style={styles.checkboxLabel}>Thanh toán sau khi nhận hàng</Text>
+              <BouncyCheckbox
+                value={isPaymentOnDelivery}
+                onPress={(isChecked) => setIsPaymentOnDelivery(isChecked)}
+                style={styles.checkbox}
+                disableText={true}
+                isChecked={false}
+                fillColor="green"
+                unFillColor="#eac1c9"
+                iconStyle={{ borderColor: "green" }}
+                innerIconStyle={{ borderWidth: 2 }}
+              />
+
+            </View>
+          </View>
+        </View>
+
+
+      </ScrollView>
+      <View style={styles.btnDatHangContainer}>
+        <Button
+          title="Đặt Hàng"
+          color={Color.colorLightgreen}
+          style={styles.datHangbtn}
+          onPress={checkPaymentInfo}
+        >
+          {/* <Text style={styles.datHangText}>Đặt Hàng</Text> */}
+        </Button>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+
+    width: "100%",
+    overflow: "hidden",
+    backgroundColor: Color.colorWhite,
+    marginTop: StatusBar.currentHeight || 0,
+
+  },
+  scrollContainer: {
+    flex: 1,
+    marginBottom: 40, // Để tránh che phủ nội dung bởi nút "Mua ngay"
+
+  },
+  chiTietDathangInner: {
+
+    height: 48,
+    width: "100%",
+    backgroundColor: Color.colorPink,
+  },
+  chiTietDatHangText: {
+    left: "15%",
+    fontSize: FontSize.size_6xl,
+    textAlign: "left",
+    // fontFamily: FontFamily.interRegular,
+    color: Color.colorBlack,
+    top: 7,
+
+  },
+  backIconBtn: {
+    width: 24,
+    height: 24,
+    bottom: "90%",
+    left: "5%",
+  },
+  titleSanPhamInner: {
+    width: "100%",
+    alignItems: "center",
+    height: 40,
+
+  },
+  textTitleSanPham: {
+    width: "100%",
+    height: 60,
+    textAlign: "left",
+    fontSize: 23,
+    left: "5%", // Để canh text bên trái
+    top: "10%", // Để canh text ở giữa theo hàng dọc
+  },
+
+  flatListContainer: {
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    backgroundColor: Color.colorPink,
+  },
+
+  flatcontainer: {
+    // height: "80%",
+  },
+  itemContainer: {
+    height: "auto",
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+    borderRadius: 10,
+    backgroundColor: Color.colorWhite,
+    shadowColor: Color.colorBlack,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 10,
+  },
+  itemInfo: {
+    flex: 1,
+    padding: 10,
+  },
+  itemName: {
+    fontSize: FontSize.size_base,
+    // fontFamily: FontFamily.interRegular,
+    marginBottom: 5,
+  },
+  itemDetail: {
+    fontSize: 12,
+    // fontFamily: FontFamily.interRegular,
+    color: Color.colorDarkgray_200,
+  },
+
+  itemGia: {
+    fontSize: 15,
+    // fontFamily: FontFamily.interRegular,
+    color: "red",
+  },
+
+  itemImage: {
+    width: 150,
+    height: "95%",
+    // borderTopRightRadius: 10,
+    // borderBottomRightRadius: 10,
+    borderRadius: 100,
+  },
+
+  discountContainer: {
+    bottom: "auto",
+    backgroundColor: Color.colorPink,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  discountInfo: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  discountLabel: {
+    fontSize: FontSize.size_base,
+    // fontFamily: FontFamily.interRegular,
+    marginBottom: 5,
+    color: Color.colorBlack,
+  },
+  discountInput: {
+    borderWidth: 1,
+    borderColor: Color.colorBlack,
+    backgroundColor: "white",
+    borderRadius: 5,
+    marginBottom: 5,
+    paddingHorizontal: 10,
+  },
+  discountDetail: {
+    fontSize: FontSize.size_xs,
+    // fontFamily: FontFamily.interRegular,
+    color: Color.colorBlack,
+  },
+  discountButtonContainer: {
+    marginLeft: 20,
+  },
+
+  priceContainer: {
+    marginTop: "2%",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    backgroundColor: Color.colorPink,
+  },
+  priceLeft: {
+    flexDirection: 'column',
+  },
+  priceRight: {
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+  },
+  priceText: {
+    fontSize: FontSize.size_base,
+    // fontFamily: FontFamily.interRegular,
+    marginBottom: 5,
+    color: Color.colorBlack,
+  },
+
+  paymentContainer: {
+    marginTop: "2%",
+    backgroundColor: Color.colorPink,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  paymentMethodContainer: {
+    marginTop: "2%",
+    backgroundColor: Color.colorPink,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+
+  },
+  paymentMethodInner: {
+    flexDirection: 'column',
+  },
+  paymentTitle: {
+    fontSize: FontSize.size_base,
+    // fontFamily: FontFamily.interRegular,
+    marginBottom: 10,
+    color: Color.colorBlack,
+  },
+  paymentInput: {
+    borderWidth: 1,
+    borderColor: Color.colorBlack,
+    backgroundColor: "white",
+    borderRadius: 5,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  checkbox: {
+    alignSelf: 'flex-end', // Căn chỉnh checkbox sang bên phải
+    marginLeft: 8, // Điều chỉnh khoảng cách giữa checkbox và văn bản
+
+  },
+  checkboxLabel: {
+    flex: 1,
+    fontSize: FontSize.size_base,
+    // fontFamily: FontFamily.interRegular,
+    color: Color.colorBlack,
+  },
+
+  btnDatHangContainer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    backgroundColor: Color.colorLightgreen,
+    height: 40,
+    justifyContent: 'center',
+  },
+  datHangbtn: {
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  datHangText: {
+    textAlign: "center",
+    color: Color.colorWhite,
+    fontSize: FontSize.size_base,
+    // fontFamily: FontFamily.interBold,
+  },
+
+
+});
+
+export default OrderDetails;
