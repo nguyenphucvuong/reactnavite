@@ -9,7 +9,7 @@ import QLProduct from "../../QLProduct"; // Import lớp quản lý sản phẩm
 import Product from "../../Product";
 import { dataProduct } from "../data/dataProduct";
 import { readShoppingCart } from "../firebase/readShoppingCart";
-import { createOneData, getAllData, updateData } from "../apis/firebaseComponent";
+import { createOneData, getAllData, updateData, deleteOneData } from "../apis/firebaseComponent";
 
 
 
@@ -43,20 +43,20 @@ const ShoppingCart = () => {
   };
 
   const handleGetAllData = () => {
-    getAllData(qlProduct.arrPro);
     console.log('qlProduct.arrPro:', qlProduct.arrPro);
-    setArrList(qlProduct.arrPro); // Ensure state is updated correctly
+    // Ensure state is updated correctly
   };
 
   const handleUpdateData = () => {
-    updateData('1');
+
 
   };
 
-  const removeProduct = (id) => {
+  const handleRemoveProduct = (id) => {
     const updatedList = arrList.filter(item => item.id !== id);
     setArrList(updatedList);
     qlProduct.arrPro = updatedList;
+
   };
   const loadProducts = async () => {
     readShoppingCart(qlProduct);
@@ -80,6 +80,7 @@ const ShoppingCart = () => {
     // handleGetAllData();
     qlProduct.getAllData();
     setArrList(qlProduct.arrPro);
+
     // AddProductonSubmitPress();
 
   }, []);
@@ -111,7 +112,7 @@ const ShoppingCart = () => {
       <View style={styles.flatcontainer}>
         <FlatList
           data={arrList}
-          renderItem={({ item }) => <FlatlistItemsComponent isDetail={false} item={item} qlProduct={qlProduct} removeProduct={removeProduct} />}
+          renderItem={({ item }) => <FlatlistItemsComponent isDetail={false} item={item} qlProduct={qlProduct} handleRemoveProduct={handleRemoveProduct} />}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.flatListContainer}
         />

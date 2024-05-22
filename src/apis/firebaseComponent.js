@@ -8,11 +8,20 @@ import { db } from '../../firebase.config'
 const dbRef = ref(db);
 const productRef = ref(db, "Product/");
 
+const deleteOneData = (id) => {
+    set(child(dbRef, "Product/" + id), null)
+        .then(() => {
+            return console.log("Data deleted successfully");
+        })
+        .catch((error) => {
+            return console.log("Data deleted failed", error);
+        });
+};
 
-
-const updateData = (id) => {
+const updateData = (id, tensp, mau, gia, soLuong, size, img) => {
     const updates = {};
     updates["Product/" + id] = {
+        id: id,
         gia: gia,
         img: img,
         mau: mau,
@@ -39,12 +48,7 @@ const getAllData = (qlProduct) => {
 };
 
 const createOneData = ({ tensp, mau, gia, soLuong, size, img }) => {
-
-
     const key = push(child(dbRef, 'Product/')).key;
-
-
-
     const setDB = set(child(dbRef, "Product/" + key), {
         id: key,
         gia: gia,
@@ -59,10 +63,8 @@ const createOneData = ({ tensp, mau, gia, soLuong, size, img }) => {
         console.log('data fail ', e)
     });
     return console.log(setDB)
-
-
 }
 
-export { createOneData, getAllData, updateData };
+export { createOneData, getAllData, updateData, deleteOneData };
 
 const styles = StyleSheet.create({})

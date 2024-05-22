@@ -6,14 +6,12 @@ import { Image } from "expo-image";
 import { Color, FontSize, Border, FontFamily } from "../../GlobalStyles";
 
 
-import { dataProduct } from "../data/dataProduct";
-import QLProduct from "../../QLProduct"; // Import lớp quản lý sản phẩm
-import Product from "../../Product";
+import { createOneData, getAllData, updateData, deleteOneData } from "../apis/firebaseComponent";
 
 
 
 
-const FlatlistItemsComponent = ({ isDetail, item, removeProduct }) => {
+const FlatlistItemsComponent = ({ isDetail, item, handleRemoveProduct }) => {
     // dataProduct.forEach((item) => {
     //     qlProduct.addProduct(item.id, item.tensp, item.mau, item.gia, item.soLuong, item.size, item.img);
     // })
@@ -29,22 +27,31 @@ const FlatlistItemsComponent = ({ isDetail, item, removeProduct }) => {
     // );
     // console.log(dataProduct.find(item => item.id == item.id).soLuong);
 
+
     const [quantity, setQuantity] = useState(item.soLuong);
 
     const decreaseQuantity = () => {
         if (quantity > 1) {
             setQuantity(quantity - 1);
-            item.decreaseSoLuong();
+            // item.decreaseSoLuong();
+            const soLuongNew = item.soLuong - 1;
+            item.soLuong = soLuongNew;
+            updateData(item.id, item.tensp, item.mau, item.gia, soLuongNew, item.size, item.img);
         }
     };
 
     const increaseQuantity = () => {
         setQuantity(quantity + 1);
-        item.increaseSoLuong();
+        // item.increaseSoLuong();
+        const soLuongNew = item.soLuong + 1;
+        item.soLuong = soLuongNew;
+        updateData(item.id, item.tensp, item.mau, item.gia, soLuongNew, item.size, item.img);
+
     };
 
-    const handleRemoveProduct = () => {
-        removeProduct(item.id);
+    const RemoveProduct = () => {
+        handleRemoveProduct(item.id);
+        deleteOneData(item.id);
     };
 
 
@@ -188,7 +195,7 @@ const FlatlistItemsComponent = ({ isDetail, item, removeProduct }) => {
                 </View>
 
             </View>
-            <Pressable onPress={handleRemoveProduct}>
+            <Pressable onPress={RemoveProduct}>
                 <Image style={{
                     height: 24,
                     width: 24,

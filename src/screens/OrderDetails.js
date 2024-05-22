@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Color, FontFamily, FontSize, Border } from "../../GlobalStyles";
 import { appInfo } from "../constains/appInfo";
-import { FlatlistItemsComponent } from "../component/FlatlistItemsComponent";
+import { FlatlistItemsComponent } from "../component/index";
 import QLProduct from "../../QLProduct"; // Import lớp quản lý sản phẩm
 import Product from "../../Product";
 import Discount from "../../Discount";

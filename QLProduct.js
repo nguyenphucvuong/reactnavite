@@ -51,6 +51,25 @@ class QLProduct {
     });
   };
 
+  updateData({ id, tensp, mau, gia, soLuong, size, img }) {
+    const updates = {};
+    updates["Product/" + id] = {
+      gia: gia,
+      img: img,
+      mau: mau,
+      size: size,
+      tensp: tensp,
+      soLuong: soLuong,
+    };
+    update(ref(db), updates)
+      .then(() => {
+        return console.log("Data updated successfully");
+      })
+      .catch((error) => {
+        return console.log("Data updated failed", error);
+      });
+  }
+
 
 
 
