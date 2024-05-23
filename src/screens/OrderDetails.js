@@ -4,16 +4,17 @@ import { Image } from "expo-image";
 import { useNavigation } from "@react-navigation/native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Color, FontFamily, FontSize, Border } from "../../GlobalStyles";
-import { FlatlistItemsComponent } from "../component/FlatlistItemsComponent";
-import QLProduct from "../../QLProduct"; // Import lớp quản lý sản phẩm
+import { FlatlistItemsComponent } from "../component";
+import { QLProduct, Product, Discount } from "../models"; // Import lớp quản lý sản phẩm
 import { createOneData, getAllData, updateData, deleteOneData, createOneDiscount, getAllDiscount } from "../apis/firebaseComponent";
 
 
 //dữ liệu tĩnh
 const qlProduct = new QLProduct();
-
+const discount = new Discount();
 ////dữ liệu giảm giá tĩnh
 const discounts = getAllDiscount();
+console.log("dis", discounts);
 let totalPrice = qlProduct.getTotalValue();
 
 
@@ -111,97 +112,86 @@ const OrderDetails = ({ route }) => {
         <Text style={styles.textTitleSanPham}>Sản Phẩm</Text>
       </View>
 
-      <ScrollView style={styles.scrollContainer}>
-        {/* flatlist danh sách sản phẩm sau khi ấn mua ngay từ Shopping cart */}
-        <View style={styles.flatcontainer}>
-          <FlatList
-            data={qlProduct.arrPro}
-            renderItem={({ item }) => <FlatlistItemsComponent isDetail={true} item={item} />}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.flatListContainer}
-          />
-        </View>
-        {/* View của mã giảm giá */}
-        <View style={styles.discountContainer}>
-          <View style={styles.discountInfo}>
-            <Text style={styles.discountLabel}>Mã giảm giá</Text>
-            <TextInput
-              style={styles.discountInput}
-              value={discountCode}
-              placeholder="Nhập mã giảm giá"
-              onChangeText={(text) => setDiscountCode(text)}
-            />
-            <Text style={styles.discountDetail}>Giảm giá: {discountAmount}đ</Text>
-          </View>
-          <View style={styles.discountButtonContainer}>
-            <Button
-              title="Áp dụng"
 
-              color={Color.colorFirebrick}
-              onPress={applyDiscount} />
-          </View>
-        </View>
-
-
-        <View style={styles.priceContainer}>
-          <View style={styles.priceLeft}>
-            <Text style={styles.priceText}>Tiền hàng:</Text>
-            <Text style={styles.priceText}>Mã giảm giá:</Text>
-            <Text style={styles.priceText}>Tổng tiền:</Text>
-          </View>
-          <View style={styles.priceRight}>
-            <Text style={styles.priceText}>{totalPrice}đ</Text>
-            <Text style={styles.priceText}>{discountAmount}đ</Text>
-            <Text style={styles.priceText}>{totalPrice - discountAmount}đ</Text>
-          </View>
-        </View>
-
-        <View style={styles.paymentContainer}>
-          <Text style={styles.paymentTitle}>1. Địa chỉ thanh toán</Text>
-          <TextInput
-            style={styles.paymentInput}
-            placeholder="Họ và tên"
-            value={nameCus}
-            onChangeText={(text) => setNameCus(text)}
-          />
-          <TextInput
-            style={styles.paymentInput}
-            placeholder="Địa chỉ"
-            value={addressCus}
-            onChangeText={(text) => setAddressCus(text)}
-          />
-          <TextInput
-            style={styles.paymentInput}
-            placeholder="Số điện thoại"
-            keyboardType="numeric"
-            value={phoneCus}
-            onChangeText={(text) => setPhoneCus(text)}
-          />
-        </View>
-
-        <View style={styles.paymentMethodContainer}>
-          <View style={styles.paymentMethodInner}>
-            <Text style={styles.paymentTitle}>2. Phương thức thanh toán</Text>
-            <View style={styles.checkboxContainer}>
-              <Text style={styles.checkboxLabel}>Thanh toán sau khi nhận hàng</Text>
-              <BouncyCheckbox
-                value={isPaymentOnDelivery}
-                onPress={(isChecked) => setIsPaymentOnDelivery(isChecked)}
-                style={styles.checkbox}
-                disableText={true}
-                isChecked={false}
-                fillColor="green"
-                unFillColor="#eac1c9"
-                iconStyle={{ borderColor: "green" }}
-                innerIconStyle={{ borderWidth: 2 }}
-              />
-
+      {/* flatlist danh sách sản phẩm sau khi ấn mua ngay từ Shopping cart */}
+      <View style={styles.flatcontainer}>
+        <FlatList
+          data={qlProduct.arrPro}
+          renderItem={({ item }) => <FlatlistItemsComponent isDetail={true} item={item} />}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.flatListContainer}
+          ListFooterComponent={<><View style={styles.discountContainer}>
+            <View style={styles.discountInfo}>
+              <Text style={styles.discountLabel}>Mã giảm giá</Text>
+              <TextInput
+                style={styles.discountInput}
+                value={discountCode}
+                placeholder="Nhập mã giảm giá"
+                onChangeText={(text) => setDiscountCode(text)} />
+              <Text style={styles.discountDetail}>Giảm giá: {discountAmount}đ</Text>
             </View>
-          </View>
-        </View>
+            <View style={styles.discountButtonContainer}>
+              <Button
+                title="Áp dụng"
+
+                color={Color.colorFirebrick}
+                onPress={applyDiscount} />
+            </View>
+          </View><View style={styles.priceContainer}>
+              <View style={styles.priceLeft}>
+                <Text style={styles.priceText}>Tiền hàng:</Text>
+                <Text style={styles.priceText}>Mã giảm giá:</Text>
+                <Text style={styles.priceText}>Tổng tiền:</Text>
+              </View>
+              <View style={styles.priceRight}>
+                <Text style={styles.priceText}>{totalPrice}đ</Text>
+                <Text style={styles.priceText}>{discountAmount}đ</Text>
+                <Text style={styles.priceText}>{totalPrice - discountAmount}đ</Text>
+              </View>
+            </View><View style={styles.paymentContainer}>
+              <Text style={styles.paymentTitle}>1. Địa chỉ thanh toán</Text>
+              <TextInput
+                style={styles.paymentInput}
+                placeholder="Họ và tên"
+                value={nameCus}
+                onChangeText={(text) => setNameCus(text)} />
+              <TextInput
+                style={styles.paymentInput}
+                placeholder="Địa chỉ"
+                value={addressCus}
+                onChangeText={(text) => setAddressCus(text)} />
+              <TextInput
+                style={styles.paymentInput}
+                placeholder="Số điện thoại"
+                keyboardType="numeric"
+                value={phoneCus}
+                onChangeText={(text) => setPhoneCus(text)} />
+            </View><View style={styles.paymentMethodContainer}>
+              <View style={styles.paymentMethodInner}>
+                <Text style={styles.paymentTitle}>2. Phương thức thanh toán</Text>
+                <View style={styles.checkboxContainer}>
+                  <Text style={styles.checkboxLabel}>Thanh toán sau khi nhận hàng</Text>
+                  <BouncyCheckbox
+                    value={isPaymentOnDelivery}
+                    onPress={(isChecked) => setIsPaymentOnDelivery(isChecked)}
+                    style={styles.checkbox}
+                    disableText={true}
+                    isChecked={false}
+                    fillColor="green"
+                    unFillColor="#eac1c9"
+                    iconStyle={{ borderColor: "green" }}
+                    innerIconStyle={{ borderWidth: 2 }} />
+
+                </View>
+              </View>
+            </View></>}
+        />
+      </View>
+      {/* View của mã giảm giá */}
 
 
-      </ScrollView>
+
+
       <View style={styles.btnDatHangContainer}>
         <Button
           title="Đặt Hàng"
@@ -271,7 +261,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 20,
     paddingTop: 20,
-    backgroundColor: Color.colorPink,
+    backgroundColor: "white",
   },
 
   flatcontainer: {
@@ -330,6 +320,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    borderRadius: 10,
+    shadowColor: Color.colorBlack,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 10,
   },
   discountInfo: {
     flex: 1,
@@ -356,6 +355,15 @@ const styles = StyleSheet.create({
   },
   discountButtonContainer: {
     marginLeft: 20,
+    borderRadius: 30,
+    shadowColor: Color.colorBlack,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 10,
   },
 
   priceContainer: {
@@ -366,6 +374,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     backgroundColor: Color.colorPink,
+    borderRadius: 10,
+    shadowColor: Color.colorBlack,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 10,
   },
   priceLeft: {
     flexDirection: 'column',
@@ -386,13 +403,31 @@ const styles = StyleSheet.create({
     backgroundColor: Color.colorPink,
     paddingHorizontal: 20,
     paddingVertical: 10,
+    borderRadius: 10,
+    shadowColor: Color.colorBlack,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 10,
   },
   paymentMethodContainer: {
     marginTop: "2%",
+    marginBottom: "45%",
     backgroundColor: Color.colorPink,
     paddingHorizontal: 20,
     paddingVertical: 10,
-
+    borderRadius: 10,
+    shadowColor: Color.colorBlack,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 10,
   },
   paymentMethodInner: {
     flexDirection: 'column',
@@ -435,6 +470,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.colorLightgreen,
     height: 40,
     justifyContent: 'center',
+
   },
   datHangbtn: {
     paddingTop: 10,

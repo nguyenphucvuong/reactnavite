@@ -1,7 +1,7 @@
 import Product from "./Product";
 import { ref, set, push, child, update, onValue } from 'firebase/database'
 
-import { db } from './firebase.config'
+import { db } from '../../firebase.config'
 
 class QLProduct {
 
@@ -47,7 +47,7 @@ class QLProduct {
     onValue(productRef, (snapshot) => {
       const data = snapshot.val();
       this.arrPro = Object.values(data || {});
-      return console.log("this.arrProthis.arrPro", this.arrPro);
+
     });
   };
 

@@ -57,6 +57,15 @@ const getAllData = (qlProduct) => {
     });
 };
 
+const getAllDiscount = () => {
+    onValue(productRef, (snapshot) => {
+        const data = snapshot.val();
+        const dataArray = Object.values(data || {});
+        console.log(dataArray)
+        return dataArray;
+    });
+};
+
 const createOneData = ({ tensp, mau, gia, soLuong, size, img }) => {
     const key = push(child(dbRef, 'Product/')).key;
     const setDB = set(child(dbRef, "Product/" + key), {
@@ -88,13 +97,7 @@ const createOneDiscount = ({ code, percent }) => {
     });
     return console.log(setDB)
 }
-const getAllDiscount = () => {
-    onValue(productRef, (snapshot) => {
-        const data = snapshot.val();
-        const dataArray = Object.values(data || {});
-        return dataArray;
-    });
-};
+
 
 export { createOneData, getAllData, updateData, deleteOneData, createOneDiscount, getAllDiscount };
 

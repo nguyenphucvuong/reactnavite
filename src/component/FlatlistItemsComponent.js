@@ -206,6 +206,6 @@ const FlatlistItemsComponent = ({ isDetail, item, handleRemoveProduct }) => {
     )
 }
 
-export { FlatlistItemsComponent }
+export default FlatlistItemsComponent;
 
 const styles = StyleSheet.create({})

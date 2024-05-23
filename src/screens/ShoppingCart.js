@@ -4,10 +4,10 @@ import { Image } from "expo-image";
 import { useNavigation } from "@react-navigation/native";
 import { Color, FontSize, Border, FontFamily } from "../../GlobalStyles";
 import { appInfo } from "../constains/appInfo";
-import { FlatlistItemsComponent } from "../component/FlatlistItemsComponent";
-import QLProduct from "../../QLProduct"; // Import lớp quản lý sản phẩm
-import Product from "../../Product";
-import { createOneData, getAllData, updateData, deleteOneData, createOneDiscount, getAllDiscount } from "../apis/firebaseComponent";
+import { FlatlistItemsComponent } from "../component";
+import { QLProduct, Product } from "../models";
+// import Product from "../models";
+import { createOneData, getAllData, updateData, deleteOneData, createOneDiscount } from "../apis/firebaseComponent";
 
 
 
@@ -22,14 +22,9 @@ const ShoppingCart = () => {
   const navigation = useNavigation();
   const [arrList, setArrList] = useState([]);
 
-  const AddProductonSubmitPress = () => {
-    console.log('Arr:', qlProduct.arrPro);
-    setArrList(qlProduct.arrPro);
 
-  };
 
   const handleCreateOneData = () => {
-    // createOneDiscount({ code: 'ABC', percent: 50 });
     createOneData({
       tensp: 'Áo thun',
       mau: 'Đen',
@@ -40,46 +35,16 @@ const ShoppingCart = () => {
     })
   };
 
-  const handleGetAllData = () => {
-    console.log('qlProduct.arrPro:', qlProduct.arrPro);
-    // Ensure state is updated correctly
-  };
-
-  const handleUpdateData = () => {
-
-
-  };
-
   const handleRemoveProduct = (id) => {
     const updatedList = arrList.filter(item => item.id !== id);
     setArrList(updatedList);
     qlProduct.arrPro = updatedList;
-
   };
 
-
-  // useEffect(() => {
-  //   // AddProductonSubmitPress();
-
-  //   loadProducts();
-
-  // }, []); // Gọi chỉ một lần khi component được khởi tạo
-
-
-
-
-
-
   useEffect(() => {
-    // handleGetAllData();
     qlProduct.getAllData();
     setArrList(qlProduct.arrPro);
-
-    // AddProductonSubmitPress();
-
   }, []);
-  // console.log("arr", arrList)
-
 
   return (
 
