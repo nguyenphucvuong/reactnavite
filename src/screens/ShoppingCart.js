@@ -6,7 +6,6 @@ import { Color, FontSize, Border, FontFamily } from "../../GlobalStyles";
 import { appInfo } from "../constains/appInfo";
 import { FlatlistItemsComponent } from "../component";
 import { QLProduct, Product } from "../models";
-// import Product from "../models";
 import { createOneData, getAllData, updateData, deleteOneData, createOneDiscount } from "../apis/firebaseComponent";
 
 
@@ -42,8 +41,13 @@ const ShoppingCart = () => {
   };
 
   useEffect(() => {
-    qlProduct.getAllData();
-    setArrList(qlProduct.arrPro);
+
+    const interval = setInterval(() => {
+      qlProduct.getAllData();
+      setArrList(qlProduct.arrPro);
+    }, 1000); // Refresh every 5 seconds
+
+    return () => clearInterval(interval);
   }, []);
 
   return (

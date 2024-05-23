@@ -7,7 +7,7 @@ class QLProduct {
 
   constructor() {
     this.arrPro = [];
-
+    this.arrDis = [];
   }
 
   getArrPro() {
@@ -69,6 +69,16 @@ class QLProduct {
         return console.log("Data updated failed", error);
       });
   }
+
+  getAllDiscount = () => {
+    const discountRef = ref(db, "Discount/");
+    onValue(discountRef, (snapshot) => {
+      const data = snapshot.val();
+      this.arrDis = Object.values(data || {});
+      // console.log(this.arrDis)
+      return this.arrDis;
+    });
+  };
 
 
 

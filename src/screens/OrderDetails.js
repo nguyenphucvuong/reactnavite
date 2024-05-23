@@ -11,10 +11,9 @@ import { createOneData, getAllData, updateData, deleteOneData, createOneDiscount
 
 //dữ liệu tĩnh
 const qlProduct = new QLProduct();
-const discount = new Discount();
 ////dữ liệu giảm giá tĩnh
-const discounts = getAllDiscount();
-console.log("dis", discounts);
+qlProduct.getAllDiscount();
+// console.log("dis", qlProduct.arrDis);
 let totalPrice = qlProduct.getTotalValue();
 
 
@@ -47,11 +46,14 @@ const OrderDetails = ({ route }) => {
       return;
     }
 
-    const discount = discounts.find(discount => discount.getCode() === discountCode);
+    const discountDT = qlProduct.arrDis.find(discount => discount.code === discountCode);
+    const discount = new Discount(discountDT.id, discountDT.code, discountDT.percent);
 
     if (discount) {
       totalPrice = qlProduct.getTotalValue();
-      const percentage = discount.getPercentage();
+
+      const percentage = discount.percentage;
+      console.log("pet", discount.percentage)
       const discountValue = totalPrice * percentage / 100;
       setDiscountAmount(discountValue);
       totalPrice -= discountValue; // Trừ số tiền giảm giá khỏi tổng tiền

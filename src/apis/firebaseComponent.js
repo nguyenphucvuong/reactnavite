@@ -7,6 +7,7 @@ import { db } from '../../firebase.config'
 
 const dbRef = ref(db);
 const productRef = ref(db, "Product/");
+const discountRef = ref(db, "Discount/");
 
 const deleteOneData = (id) => {
     set(child(dbRef, "Product/" + id), null)
@@ -58,10 +59,10 @@ const getAllData = (qlProduct) => {
 };
 
 const getAllDiscount = () => {
-    onValue(productRef, (snapshot) => {
+    onValue(discountRef, (snapshot) => {
         const data = snapshot.val();
         const dataArray = Object.values(data || {});
-        console.log(dataArray)
+        // console.log(dataArray)
         return dataArray;
     });
 };
