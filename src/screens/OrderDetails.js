@@ -4,20 +4,16 @@ import { Image } from "expo-image";
 import { useNavigation } from "@react-navigation/native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Color, FontFamily, FontSize, Border } from "../../GlobalStyles";
-import { appInfo } from "../constains/appInfo";
-import { FlatlistItemsComponent } from "../component/index";
+import { FlatlistItemsComponent } from "../component/FlatlistItemsComponent";
 import QLProduct from "../../QLProduct"; // Import lớp quản lý sản phẩm
-import Product from "../../Product";
-import Discount from "../../Discount";
+import { createOneData, getAllData, updateData, deleteOneData, createOneDiscount, getAllDiscount } from "../apis/firebaseComponent";
+
 
 //dữ liệu tĩnh
 const qlProduct = new QLProduct();
 
 ////dữ liệu giảm giá tĩnh
-const discounts = [
-  new Discount("a123", 30),
-  new Discount("a12", 50)
-];
+const discounts = getAllDiscount();
 let totalPrice = qlProduct.getTotalValue();
 
 
@@ -121,7 +117,7 @@ const OrderDetails = ({ route }) => {
           <FlatList
             data={qlProduct.arrPro}
             renderItem={({ item }) => <FlatlistItemsComponent isDetail={true} item={item} />}
-            keyExtractor={(item) => item.masp}
+            keyExtractor={(item) => item.id}
             contentContainerStyle={styles.flatListContainer}
           />
         </View>

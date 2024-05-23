@@ -7,9 +7,7 @@ import { appInfo } from "../constains/appInfo";
 import { FlatlistItemsComponent } from "../component/FlatlistItemsComponent";
 import QLProduct from "../../QLProduct"; // Import lớp quản lý sản phẩm
 import Product from "../../Product";
-import { dataProduct } from "../data/dataProduct";
-import { readShoppingCart } from "../firebase/readShoppingCart";
-import { createOneData, getAllData, updateData, deleteOneData } from "../apis/firebaseComponent";
+import { createOneData, getAllData, updateData, deleteOneData, createOneDiscount, getAllDiscount } from "../apis/firebaseComponent";
 
 
 
@@ -31,7 +29,7 @@ const ShoppingCart = () => {
   };
 
   const handleCreateOneData = () => {
-
+    // createOneDiscount({ code: 'ABC', percent: 50 });
     createOneData({
       tensp: 'Áo thun',
       mau: 'Đen',
@@ -58,11 +56,7 @@ const ShoppingCart = () => {
     qlProduct.arrPro = updatedList;
 
   };
-  const loadProducts = async () => {
-    readShoppingCart(qlProduct);
-    console.log('Arr:', qlProduct.arrPro);
-    setArrList([...qlProduct.arrPro]); // Ensure state is updated correctly
-  };
+
 
   // useEffect(() => {
   //   // AddProductonSubmitPress();
