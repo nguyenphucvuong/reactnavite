@@ -2,8 +2,8 @@ const Stack = createNativeStackNavigator();
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import ShoppingCart from "./src/screens/ShoppingCart";
-import OrderDetails from "./src/screens/OrderDetails";
+import { ShoppingCart, OrderDetails, BillScreen, HomeScreen, MainScreen } from "./src/screens";
+
 
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -32,6 +32,16 @@ const App = () => {
         {hideSplashScreen ? (
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen
+              name="MainScreen"
+              component={MainScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="HomeScreen"
+              component={HomeScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="ShoppingCart"
               component={ShoppingCart}
               options={{ headerShown: false }}
@@ -41,20 +51,17 @@ const App = () => {
               component={OrderDetails}
               options={{ headerShown: false }}
             />
-            {/* <Stack.Screen
-              name="Contact"
-              component={Contact}
+            <Stack.Screen
+              name="BillScreen"
+              component={BillScreen}
               options={{ headerShown: false }}
             />
-            <Stack.Screen
-              name="Home"
-              component={Home}
-              options={{ headerShown: false }}
-            /> */}
+
 
           </Stack.Navigator>
         ) : null}
       </NavigationContainer>
+
     </>
   );
 };

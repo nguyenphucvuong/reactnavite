@@ -9,13 +9,6 @@ import { CartManager, Cart, Discount, DiscountManager } from "../models"; // Imp
 import { deleteDatas } from "../apis/firebaseComponent";
 
 
-//dữ liệu tĩnh
-const qlProduct = new CartManager();
-const qlDiscount = new DiscountManager();
-////dữ liệu giảm giá tĩnh
-qlDiscount.getAllDiscount();
-// console.log("dis", qlProduct.arrDis);
-let totalPrice = qlProduct.getTotalValue();
 
 
 
@@ -23,10 +16,22 @@ let totalPrice = qlProduct.getTotalValue();
 const OrderDetails = ({ route }) => {
   const navigation = useNavigation();
 
+  //dữ liệu tĩnh
+  const cart = new CartManager();
+  const qlDiscount = new DiscountManager();
+  ////dữ liệu giảm giá tĩnh
+  qlDiscount.getAllDiscount();
+
+  let totalPrice = cart.getTotalValue();
+
+
   //lấy dữ liệu từ trang trước đó
   const { productList } = route.params;
-  qlProduct.arrPro = productList;
-  totalPrice = qlProduct.getTotalValue();
+  cart.arrPro = productList;
+  totalPrice = cart.getTotalValue();
+
+
+
 
   //mã giảm giá
   const [discountCode, setDiscountCode] = React.useState("");
@@ -54,7 +59,7 @@ const OrderDetails = ({ route }) => {
     const discount = new Discount(discountDT.id, discountDT.code, discountDT.percent);
 
     if (discount) {
-      totalPrice = qlProduct.getTotalValue();
+      totalPrice = cart.getTotalValue();
 
       const percentage = discount.percentage;
       console.log("pet", discount.percentage)
@@ -65,7 +70,7 @@ const OrderDetails = ({ route }) => {
       console.log("Tổng tiền sau giảm giá:", totalPrice);
     } else {
       console.log("Mã giảm giá không hợp lệ");
-      totalPrice = qlProduct.getTotalValue();
+      totalPrice = cart.getTotalValue();
       setDiscountAmount(0);
 
     }
@@ -122,7 +127,7 @@ const OrderDetails = ({ route }) => {
       {/* flatlist danh sách sản phẩm sau khi ấn mua ngay từ Shopping cart */}
       <View style={styles.flatcontainer}>
         <FlatList
-          data={qlProduct.arrPro}
+          data={cart.arrPro}
           renderItem={({ item }) => <FlatlistItemsComponent isDetail={true} item={item} />}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.flatListContainer}

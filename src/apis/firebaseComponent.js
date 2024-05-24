@@ -9,6 +9,25 @@ const dbRef = ref(db);
 const cartRef = ref(db, "Cart/");
 const discountRef = ref(db, "Discount/");
 
+const createOneCartData = ({ username, name, color, price, quantity, size, img }) => {
+    const key = push(child(dbRef, 'Cart/')).key;
+    const setDB = set(child(dbRef, "Cart/" + key), {
+        id: key,
+        username: username,
+        price: price,
+        img: img,
+        color: color,
+        size: size,
+        name: name,
+        quantity: quantity,
+    }).then(() => {
+        return console.log('data saved successfully')
+    }).catch((e) => {
+        console.log('data fail ', e)
+    });
+    return console.log(setDB)
+}
+
 const deleteOneCartData = (id) => {
     set(child(dbRef, "Cart/" + id), null)
         .then(() => {
@@ -29,7 +48,7 @@ const deleteAllCartData = () => {
         });
 };
 
-const updateCartData = (id, username, name, color, price, quantiny, size, img) => {
+const updateCartData = (id, username, name, color, price, quantity, size, img) => {
     const updates = {};
     updates["Cart/" + id] = {
         id: id,
@@ -39,7 +58,7 @@ const updateCartData = (id, username, name, color, price, quantiny, size, img) =
         color: color,
         size: size,
         name: name,
-        quantiny: quantiny,
+        quantity: quantity,
     };
     update(ref(db), updates)
         .then(() => {
@@ -67,32 +86,22 @@ const getAllDiscount = () => {
         return dataArray;
     });
 };
-
-const createOneCartData = ({ username, name, color, price, quantiny, size, img }) => {
-    const key = push(child(dbRef, 'Cart/')).key;
-    const setDB = set(child(dbRef, "Cart/" + key), {
-        id: key,
-        username: username,
-        price: price,
-        img: img,
-        color: color,
-        size: size,
-        name: name,
-        quantiny: quantiny,
-    }).then(() => {
-        return console.log('data saved successfully')
-    }).catch((e) => {
-        console.log('data fail ', e)
-    });
-    return console.log(setDB)
-}
-
-const createOneDiscount = ({ code, percent }) => {
+const deleteOneDiscountData = (id) => {
+    set(child(dbRef, "Cart/" + id), null)
+        .then(() => {
+            return console.log("Data deleted successfully");
+        })
+        .catch((error) => {
+            return console.log("Data deleted failed", error);
+        });
+};
+const createOneDiscount = ({ code, percent, status }) => {
     const key = push(child(dbRef, 'Discount/')).key;
     const setDB = set(child(dbRef, "Discount/" + key), {
         id: key,
         code: code,
         percent: percent,
+        status: status,
     }).then(() => {
         return console.log('data saved successfully')
     }).catch((e) => {
@@ -100,6 +109,10 @@ const createOneDiscount = ({ code, percent }) => {
     });
     return console.log(setDB)
 }
+
+
+
+
 
 
 export { createOneCartData, getAllCartData, updateCartData, deleteOneCartData, createOneDiscount, getAllDiscount, deleteAllCartData };

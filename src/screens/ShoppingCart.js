@@ -10,14 +10,16 @@ import { createOneData, getAllCartData, updateCartData, deleteOneCartData, creat
 
 
 
-const cart = new CartManager();
+
 // dataProduct.forEach((item) => {
 //   cart.addProduct(item.id, item.name, item.color, item.price, item.soLuong, item.size, item.img);
 // })
 
+const cart = new CartManager();
 
 
-const ShoppingCart = () => {
+
+const ShoppingCart = (cart) => {
   const navigation = useNavigation();
   const [arrList, setArrList] = useState([]);
 
@@ -29,7 +31,7 @@ const ShoppingCart = () => {
       name: 'Áo thun',
       color: 'Đen',
       price: 100000,
-      quantiny: 10,
+      quantity: 10,
       size: 'M',
       img: 'https://pubcdn.ivymoda.com/files/news/2023/08/02/4534c5d0192bbc110f62a896f433eef0.png',
     })
@@ -46,10 +48,16 @@ const ShoppingCart = () => {
     const interval = setInterval(() => {
       cart.getAllData();
       setArrList(cart.arrPro);
+
     }, 1000); // Refresh every 5 seconds
 
     return () => clearInterval(interval);
   }, []);
+
+
+
+
+
 
   return (
 
@@ -137,8 +145,8 @@ const ShoppingCart = () => {
           />
         </Pressable>
         <Pressable
-          style={styles.contactPage}
-        // onPress={() => navigation.navigate("Contact")}
+          style={styles.billPage}
+          onPress={() => navigation.navigate("BillScreen")}
         >
           <Image
             style={styles.iconMenu}
@@ -252,7 +260,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  contactPage: {
+  billPage: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",

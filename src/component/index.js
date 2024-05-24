@@ -1,3 +1,3 @@
 import FlatlistItemsComponent from './FlatlistItemsComponent';
-
-export { FlatlistItemsComponent };
+import ScreenComponent from './ScreenComponent';
+export { FlatlistItemsComponent, ScreenComponent };

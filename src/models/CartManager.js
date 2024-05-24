@@ -17,8 +17,8 @@ class CartManager {
     this.arrPro = value;
   }
 
-  addCart(id, username, name, color, price, quantiny, size, img) {
-    const newCart = new Cart(id, username, name, color, gia, quantiny, size, img);
+  addCart(id, username, name, color, price, quantity, size, img) {
+    const newCart = new Cart(id, username, name, color, price, quantity, size, img);
     this.arrPro.push(newCart);
   }
 
@@ -35,7 +35,7 @@ class CartManager {
   getTotalValue() {
     let totalValue = 0;
     for (let i = 0; i < this.arrPro.length; i++) {
-      totalValue += this.arrPro[i].gia * this.arrPro[i].quantiny;
+      totalValue += this.arrPro[i].price * this.arrPro[i].quantity;
     }
     return totalValue;
   }
@@ -50,16 +50,16 @@ class CartManager {
     });
   };
 
-  updateData({ id, username, name, color, gia, quantiny, size, img }) {
+  updateData({ id, username, name, color, price, quantity, size, img }) {
     const updates = {};
     updates["Cart/" + id] = {
-      gia: gia,
+      price: price,
       username: username,
       img: img,
       color: color,
       size: size,
       name: name,
-      quantiny: quantiny,
+      quantity: quantity,
     };
     update(ref(db), updates)
       .then(() => {

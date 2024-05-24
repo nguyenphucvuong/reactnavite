@@ -1,13 +1,13 @@
 // Cart.js
 
 class Cart {
-    constructor(id, username, name, color, price, quantiny, size, img) {
+    constructor(id, username, name, color, price, quantity, size, img) {
         this.id = id;
         this.username = username;
         this.name = name;
         this.color = color;
         this.price = price;
-        this.quantiny = quantiny;
+        this.quantity = quantity;
         this.size = size;
         this.img = img;
     }
