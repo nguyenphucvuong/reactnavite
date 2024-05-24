@@ -6,11 +6,11 @@ import { db } from '../../firebase.config'
 
 
 const dbRef = ref(db);
-const productRef = ref(db, "Product/");
+const cartRef = ref(db, "Cart/");
 const discountRef = ref(db, "Discount/");
 
-const deleteOneData = (id) => {
-    set(child(dbRef, "Product/" + id), null)
+const deleteOneCartData = (id) => {
+    set(child(dbRef, "Cart/" + id), null)
         .then(() => {
             return console.log("Data deleted successfully");
         })
@@ -19,8 +19,8 @@ const deleteOneData = (id) => {
         });
 };
 
-const deleteDatas = (id) => {
-    set(child(dbRef, "Product/" + id), null)
+const deleteAllCartData = () => {
+    set(child(dbRef, "Cart/"), null)
         .then(() => {
             return console.log("Data deleted successfully");
         })
@@ -29,16 +29,17 @@ const deleteDatas = (id) => {
         });
 };
 
-const updateData = (id, tensp, mau, gia, soLuong, size, img) => {
+const updateCartData = (id, username, name, color, price, quantiny, size, img) => {
     const updates = {};
-    updates["Product/" + id] = {
+    updates["Cart/" + id] = {
         id: id,
-        gia: gia,
+        username: username,
+        price: price,
         img: img,
-        mau: mau,
+        color: color,
         size: size,
-        tensp: tensp,
-        soLuong: soLuong,
+        name: name,
+        quantiny: quantiny,
     };
     update(ref(db), updates)
         .then(() => {
@@ -49,8 +50,8 @@ const updateData = (id, tensp, mau, gia, soLuong, size, img) => {
         });
 }
 
-const getAllData = (qlProduct) => {
-    onValue(productRef, (snapshot) => {
+const getAllCartData = (qlProduct) => {
+    onValue(cartRef, (snapshot) => {
         const data = snapshot.val();
         const dataArray = Object.values(data || {});
         qlProduct = dataArray
@@ -67,16 +68,17 @@ const getAllDiscount = () => {
     });
 };
 
-const createOneData = ({ tensp, mau, gia, soLuong, size, img }) => {
-    const key = push(child(dbRef, 'Product/')).key;
-    const setDB = set(child(dbRef, "Product/" + key), {
+const createOneCartData = ({ username, name, color, price, quantiny, size, img }) => {
+    const key = push(child(dbRef, 'Cart/')).key;
+    const setDB = set(child(dbRef, "Cart/" + key), {
         id: key,
-        gia: gia,
+        username: username,
+        price: price,
         img: img,
-        mau: mau,
+        color: color,
         size: size,
-        tensp: tensp,
-        soLuong: soLuong,
+        name: name,
+        quantiny: quantiny,
     }).then(() => {
         return console.log('data saved successfully')
     }).catch((e) => {
@@ -100,6 +102,6 @@ const createOneDiscount = ({ code, percent }) => {
 }
 
 
-export { createOneData, getAllData, updateData, deleteOneData, createOneDiscount, getAllDiscount };
+export { createOneCartData, getAllCartData, updateCartData, deleteOneCartData, createOneDiscount, getAllDiscount, deleteAllCartData };
 
 const styles = StyleSheet.create({})

@@ -1,13 +1,12 @@
-import Product from "./Product";
+import Cart from "./Cart";
 import { ref, set, push, child, update, onValue } from 'firebase/database'
 
 import { db } from '../../firebase.config'
 
-class QLProduct {
+class CartManager {
 
   constructor() {
     this.arrPro = [];
-    this.arrDis = [];
   }
 
   getArrPro() {
@@ -18,13 +17,13 @@ class QLProduct {
     this.arrPro = value;
   }
 
-  addProduct(id, tensp, mau, gia, soLuong, size, img) {
-    const newProduct = new Product(id, tensp, mau, gia, soLuong, size, img);
-    this.arrPro.push(newProduct);
+  addCart(id, username, name, color, price, quantiny, size, img) {
+    const newCart = new Cart(id, username, name, color, gia, quantiny, size, img);
+    this.arrPro.push(newCart);
   }
 
 
-  removeProduct(id) {
+  removeCart(id) {
     for (let i = 0; i < this.arrPro.length; i++) {
       if (this.arrPro[i].getid() === id) {
         this.arrPro.splice(i, 1);
@@ -36,30 +35,31 @@ class QLProduct {
   getTotalValue() {
     let totalValue = 0;
     for (let i = 0; i < this.arrPro.length; i++) {
-      totalValue += this.arrPro[i].gia * this.arrPro[i].soLuong;
+      totalValue += this.arrPro[i].gia * this.arrPro[i].quantiny;
     }
     return totalValue;
   }
 
   getAllData() {
     const dbRef = ref(db);
-    const productRef = ref(db, "Product/");
-    onValue(productRef, (snapshot) => {
+    const CartRef = ref(db, "Cart/");
+    onValue(CartRef, (snapshot) => {
       const data = snapshot.val();
       this.arrPro = Object.values(data || {});
 
     });
   };
 
-  updateData({ id, tensp, mau, gia, soLuong, size, img }) {
+  updateData({ id, username, name, color, gia, quantiny, size, img }) {
     const updates = {};
-    updates["Product/" + id] = {
+    updates["Cart/" + id] = {
       gia: gia,
+      username: username,
       img: img,
-      mau: mau,
+      color: color,
       size: size,
-      tensp: tensp,
-      soLuong: soLuong,
+      name: name,
+      quantiny: quantiny,
     };
     update(ref(db), updates)
       .then(() => {
@@ -70,19 +70,11 @@ class QLProduct {
       });
   }
 
-  getAllDiscount = () => {
-    const discountRef = ref(db, "Discount/");
-    onValue(discountRef, (snapshot) => {
-      const data = snapshot.val();
-      this.arrDis = Object.values(data || {});
-      // console.log(this.arrDis)
-      return this.arrDis;
-    });
-  };
+
 
 
 
 
 }
 
-export default QLProduct;
+export default CartManager;

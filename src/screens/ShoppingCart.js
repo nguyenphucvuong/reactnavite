@@ -5,14 +5,14 @@ import { useNavigation } from "@react-navigation/native";
 import { Color, FontSize, Border, FontFamily } from "../../GlobalStyles";
 import { appInfo } from "../constains/appInfo";
 import { FlatlistItemsComponent } from "../component";
-import { QLProduct, Product } from "../models";
-import { createOneData, getAllData, updateData, deleteOneData, createOneDiscount } from "../apis/firebaseComponent";
+import { Cart, CartManager } from "../models";
+import { createOneData, getAllCartData, updateCartData, deleteOneCartData, createOneDiscount, createOneCartData } from "../apis/firebaseComponent";
 
 
 
-const qlProduct = new QLProduct();
+const cart = new CartManager();
 // dataProduct.forEach((item) => {
-//   qlProduct.addProduct(item.id, item.tensp, item.mau, item.gia, item.soLuong, item.size, item.img);
+//   cart.addProduct(item.id, item.name, item.color, item.price, item.soLuong, item.size, item.img);
 // })
 
 
@@ -24,11 +24,12 @@ const ShoppingCart = () => {
 
 
   const handleCreateOneData = () => {
-    createOneData({
-      tensp: 'Áo thun',
-      mau: 'Đen',
-      gia: 100000,
-      soLuong: 10,
+    createOneCartData({
+      username: 'admin@gmail.com',
+      name: 'Áo thun',
+      color: 'Đen',
+      price: 100000,
+      quantiny: 10,
       size: 'M',
       img: 'https://pubcdn.ivymoda.com/files/news/2023/08/02/4534c5d0192bbc110f62a896f433eef0.png',
     })
@@ -37,14 +38,14 @@ const ShoppingCart = () => {
   const handleRemoveProduct = (id) => {
     const updatedList = arrList.filter(item => item.id !== id);
     setArrList(updatedList);
-    qlProduct.arrPro = updatedList;
+    cart.arrPro = updatedList;
   };
 
   useEffect(() => {
 
     const interval = setInterval(() => {
-      qlProduct.getAllData();
-      setArrList(qlProduct.arrPro);
+      cart.getAllData();
+      setArrList(cart.arrPro);
     }, 1000); // Refresh every 5 seconds
 
     return () => clearInterval(interval);
@@ -75,7 +76,7 @@ const ShoppingCart = () => {
       <View style={styles.flatcontainer}>
         <FlatList
           data={arrList}
-          renderItem={({ item }) => <FlatlistItemsComponent isDetail={false} item={item} qlProduct={qlProduct} handleRemoveProduct={handleRemoveProduct} />}
+          renderItem={({ item }) => <FlatlistItemsComponent isDetail={false} item={item} cart={cart} handleRemoveProduct={handleRemoveProduct} />}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.flatListContainer}
         />
@@ -95,7 +96,7 @@ const ShoppingCart = () => {
           title="Mua ngay"
           style={styles.muaNgaybtn}
           color={Color.colorLightgreen}
-          onPress={() => navigation.navigate("OrderDetails", { productList: qlProduct.arrPro })}
+          onPress={() => navigation.navigate("OrderDetails", { productList: cart.arrPro })}
         >
           {/* <Text style={styles.muaNgayText}>Mua ngay</Text> */}
         </Button>

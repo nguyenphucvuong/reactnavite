@@ -5,14 +5,15 @@ import { useNavigation } from "@react-navigation/native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Color, FontFamily, FontSize, Border } from "../../GlobalStyles";
 import { FlatlistItemsComponent } from "../component";
-import { QLProduct, Product, Discount } from "../models"; // Import lớp quản lý sản phẩm
-import { createOneData, getAllData, updateData, deleteOneData, createOneDiscount, getAllDiscount } from "../apis/firebaseComponent";
+import { CartManager, Cart, Discount, DiscountManager } from "../models"; // Import lớp quản lý sản phẩm
+import { deleteDatas } from "../apis/firebaseComponent";
 
 
 //dữ liệu tĩnh
-const qlProduct = new QLProduct();
+const qlProduct = new CartManager();
+const qlDiscount = new DiscountManager();
 ////dữ liệu giảm giá tĩnh
-qlProduct.getAllDiscount();
+qlDiscount.getAllDiscount();
 // console.log("dis", qlProduct.arrDis);
 let totalPrice = qlProduct.getTotalValue();
 
@@ -38,6 +39,9 @@ const OrderDetails = ({ route }) => {
 
   const [isPaymentOnDelivery, setIsPaymentOnDelivery] = React.useState(false);
 
+  // const DeleteDatas = () => {
+  //   deleteDatas();
+  // }
 
   //hàm xử lý khi ấn vào áp dụng mã giảm giá
   const applyDiscount = () => {
@@ -46,7 +50,7 @@ const OrderDetails = ({ route }) => {
       return;
     }
 
-    const discountDT = qlProduct.arrDis.find(discount => discount.code === discountCode);
+    const discountDT = qlDiscount.discounts.find(discount => discount.code === discountCode);
     const discount = new Discount(discountDT.id, discountDT.code, discountDT.percent);
 
     if (discount) {
@@ -92,7 +96,7 @@ const OrderDetails = ({ route }) => {
     // Alert.alert('Đặt hàng thành công!', 'Đơn hàng trị giá ' + { paymentAmount } + ' của anh/chị ' + { nameCus } + ' sẽ sớm được vận chuyển')
     // const alertt = 'Đơn hàng trị giá ' + { paymentAmount } + ' của anh/chị ' + { nameCus } + ' sẽ sớm được vận chuyển';
     // Alert.alert('Đặt hàng thành công!', alertt)
-
+    deleteDatas();
   };
 
 
@@ -199,12 +203,12 @@ const OrderDetails = ({ route }) => {
           title="Đặt Hàng"
           color={Color.colorLightgreen}
           style={styles.datHangbtn}
-          onPress={checkPaymentInfo}
+          onPress={checkPaymentInfo()}
         >
           {/* <Text style={styles.datHangText}>Đặt Hàng</Text> */}
         </Button>
       </View>
-    </View>
+    </View >
   );
 };
 

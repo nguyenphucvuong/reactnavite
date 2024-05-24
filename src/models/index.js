@@ -1,5 +1,6 @@
 import Discount from "./Discount";
-import Product from "./Product";
-import QLProduct from "./QLProduct";
+import Cart from "./Cart";
+import CartManager from "./CartManager";
+import DiscountManager from "./DiscountManager";
 
-export { QLProduct, Product, Discount };
+export { CartManager, Cart, Discount, DiscountManager };

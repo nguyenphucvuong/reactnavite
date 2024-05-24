@@ -6,52 +6,52 @@ import { Image } from "expo-image";
 import { Color, FontSize, Border, FontFamily } from "../../GlobalStyles";
 
 
-import { createOneData, getAllData, updateData, deleteOneData } from "../apis/firebaseComponent";
+import { createOneCartData, getAllCartData, updateCartData, deleteOneCartData } from "../apis/firebaseComponent";
 
 
 
 
 const FlatlistItemsComponent = ({ isDetail, item, handleRemoveProduct }) => {
     // dataProduct.forEach((item) => {
-    //     qlProduct.addProduct(item.id, item.tensp, item.mau, item.gia, item.soLuong, item.size, item.img);
+    //     qlProduct.addProduct(item.id, item.name, item.color, item.gia, item.quantity, item.size, item.img);
     // })
 
     // ShoppingCart functions 
     // dataProduct.forEach((items) => {
     //     if (items.id == item.id) {
-    //         items.soLuong++;
-    //         dataProduct.find(item => item.id == item.id).soLuong = items.soLuong++;
+    //         items.quantity++;
+    //         dataProduct.find(item => item.id == item.id).quantity = items.quantity++;
 
     //     }
     // }
     // );
-    // console.log(dataProduct.find(item => item.id == item.id).soLuong);
+    // console.log(dataProduct.find(item => item.id == item.id).quantity);
 
 
-    const [quantity, setQuantity] = useState(item.soLuong);
+    const [quantity, setQuantity] = useState(item.quantity);
 
     const decreaseQuantity = () => {
         if (quantity > 1) {
             setQuantity(quantity - 1);
-            // item.decreaseSoLuong();
-            const soLuongNew = item.soLuong - 1;
-            item.soLuong = soLuongNew;
-            updateData(item.id, item.tensp, item.mau, item.gia, soLuongNew, item.size, item.img);
+            // item.decreasequantity();
+            const quantityNew = item.quantity - 1;
+            item.quantity = quantityNew;
+            updateCartData(item.id, item.username, item.name, item.color, item.gia, quantityNew, item.size, item.img);
         }
     };
 
     const increaseQuantity = () => {
         setQuantity(quantity + 1);
-        // item.increaseSoLuong();
-        const soLuongNew = item.soLuong + 1;
-        item.soLuong = soLuongNew;
-        updateData(item.id, item.tensp, item.mau, item.gia, soLuongNew, item.size, item.img);
+        // item.increasequantity();
+        const quantityNew = item.quantity + 1;
+        item.quantity = quantityNew;
+        updateCartData(item.id, item.username, item.name, item.color, item.gia, quantityNew, item.size, item.img);
 
     };
 
     const RemoveProduct = () => {
         handleRemoveProduct(item.id);
-        deleteOneData(item.id);
+        deleteOneCartData(item.id);
     };
 
 
@@ -89,19 +89,19 @@ const FlatlistItemsComponent = ({ isDetail, item, handleRemoveProduct }) => {
                     fontSize: FontSize.size_base,
 
                     marginBottom: 5,
-                }}>{item.tensp}</Text>
+                }}>{item.name}</Text>
                 <Text style={{
                     fontSize: 12,
                     color: Color.colorDarkgray_200,
-                }}>Phân loại: {item.mau}, {item.size}</Text>
+                }}>Phân loại: {item.color}, {item.size}</Text>
                 <Text style={{
                     fontSize: 12,
                     color: Color.colorDarkgray_200,
-                }}>Số lượng: {item.soLuong}</Text>
+                }}>Số lượng: {item.quantity}</Text>
                 <Text style={{
                     fontSize: 15,
                     color: "red",
-                }}>Giá: {item.soLuong * item.gia}đ</Text>
+                }}>Giá: {item.quantity * item.gia}đ</Text>
             </View>
             <Image style={{
                 width: 150,
@@ -148,15 +148,15 @@ const FlatlistItemsComponent = ({ isDetail, item, handleRemoveProduct }) => {
                         fontSize: FontSize.size_base,
                         color: "black",
                         marginBottom: 4,
-                    }}>{item.tensp}</Text>
+                    }}>{item.name}</Text>
                     <Text style={{
                         fontSize: FontSize.size_xs,
                         color: Color.colorDarkgray_200
-                    }}>Phân Loại: {item.size}, {item.mau}</Text>
+                    }}>Phân Loại: {item.size}, {item.color}</Text>
                     <Text style={{
                         fontSize: FontSize.size_xs,
                         color: Color.colorDarkgray_200,
-                    }}>Giá: {item.soLuong * item.gia}đ</Text>
+                    }}>Giá: {item.quantity * item.gia}đ</Text>
                     <View style={{
                         height: 23,
                         width: 70,
@@ -182,7 +182,7 @@ const FlatlistItemsComponent = ({ isDetail, item, handleRemoveProduct }) => {
                             // fontFamily: FontFamily.interMedium,
                             fontWeight: "500",
                             color: Color.colorBlack,
-                        }}>{item.soLuong}</Text>
+                        }}>{item.quantity}</Text>
                         <Pressable onPress={increaseQuantity}>
                             <Text style={{
                                 fontSize: FontSize.size_smi,
