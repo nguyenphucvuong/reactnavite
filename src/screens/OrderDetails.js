@@ -6,7 +6,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Color, FontFamily, FontSize, Border } from "../../GlobalStyles";
 import { FlatlistItemsComponent } from "../component";
 import { CartManager, Cart, Discount, DiscountManager } from "../models"; // Import lớp quản lý sản phẩm
-import { deleteDatas } from "../apis/firebaseComponent";
+import { deleteOneCartData, createOneBill } from "../apis/firebaseComponent";
 
 
 
@@ -102,7 +102,25 @@ const OrderDetails = ({ route }) => {
     // Alert.alert('Đặt hàng thành công!', 'Đơn hàng trị giá ' + { paymentAmount } + ' của anh/chị ' + { nameCus } + ' sẽ sớm được vận chuyển')
     // const alertt = 'Đơn hàng trị giá ' + { paymentAmount } + ' của anh/chị ' + { nameCus } + ' sẽ sớm được vận chuyển';
     // Alert.alert('Đặt hàng thành công!', alertt)
-    deleteDatas();
+
+    createOneBill({
+      username: "admin1@gmail.com",
+      cart: cart.arrPro,
+      total: totalPrice,
+      discount: discountAmount,
+      status: "doing",
+      address: addressCus,
+      phone: phoneCus,
+      note: note,
+    })
+    cart.arrPro.forEach((item) => {
+      deleteOneCartData(item.id);
+      console.log(item.id)
+    });
+
+
+
+
 
   };
 
@@ -231,7 +249,7 @@ const OrderDetails = ({ route }) => {
           title="Đặt Hàng"
           color={Color.colorLightgreen}
           style={styles.datHangbtn}
-          onPress={checkPaymentInfo()}
+          onPress={checkPaymentInfo}
         >
           {/* <Text style={styles.datHangText}>Đặt Hàng</Text> */}
         </Button>

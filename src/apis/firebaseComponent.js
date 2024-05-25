@@ -8,11 +8,13 @@ import { db } from '../../firebase.config'
 const dbRef = ref(db);
 const cartRef = ref(db, "Cart/");
 const discountRef = ref(db, "Discount/");
+const billRef = ref(db, "Bill/");
 
 const createOneCartData = ({ username, name, color, price, quantity, size, img }) => {
+    //lấy id của cart trên firebase
     const key = push(child(dbRef, 'Cart/')).key;
     const setDB = set(child(dbRef, "Cart/" + key), {
-        id: key,
+        id: key, // gán id cho cart
         username: username,
         price: price,
         img: img,
@@ -110,11 +112,37 @@ const createOneDiscount = ({ code, percent, status }) => {
     return console.log(setDB)
 }
 
+const createOneBill = ({ username, cart, total, discount, status, address, phone, note }) => {
+    const key = push(child(dbRef, 'Bill/')).key;
+
+    const cartObject = cart.reduce((acc, item) => {
+        acc[item.id] = item;
+        return acc;
+    }, {});
+
+    const setDB = set(child(dbRef, "Bill/" + key), {
+        id: key,
+        username: username,
+        Cart: cartObject,
+        total: total,
+        discount: discount,
+        status: status,
+        address: address,
+        phone: phone,
+        note: note,
+    }).then(() => {
+        return console.log('data saved successfully')
+    }).catch((e) => {
+        console.log('data fail ', e)
+    });
+    return console.log(setDB)
+}
 
 
 
 
 
-export { createOneCartData, getAllCartData, updateCartData, deleteOneCartData, createOneDiscount, getAllDiscount, deleteAllCartData };
+
+export { createOneCartData, getAllCartData, updateCartData, deleteOneCartData, createOneDiscount, getAllDiscount, deleteAllCartData, createOneBill };
 
 const styles = StyleSheet.create({})

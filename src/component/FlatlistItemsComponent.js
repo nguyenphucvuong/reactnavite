@@ -39,6 +39,17 @@ const FlatlistItemsComponent = ({ isDetail, item, handleRemoveProduct, isBill })
     };
 
 
+    if (isBill) {
+        return (
+            <>
+
+            </>
+        )
+    }
+
+
+
+
 
 
     // OrderDetails functions 
@@ -236,7 +247,6 @@ const FlatlistItemsComponent = ({ isDetail, item, handleRemoveProduct, isBill })
                 </View>
             )
         }
-
     }
 
 

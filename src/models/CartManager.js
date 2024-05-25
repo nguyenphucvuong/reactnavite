@@ -40,13 +40,13 @@ class CartManager {
     return totalValue;
   }
 
-  getAllData() {
+  getAllData(username) {
     const dbRef = ref(db);
     const CartRef = ref(db, "Cart/");
     onValue(CartRef, (snapshot) => {
       const data = snapshot.val();
-      this.arrPro = Object.values(data || {});
-
+      this.arrPro = Object.values(data || {}).filter(item => item.username === username);
+      // console.log(this.arrPro)
     });
   };
 

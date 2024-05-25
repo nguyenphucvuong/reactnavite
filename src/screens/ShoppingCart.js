@@ -56,10 +56,18 @@ const ShoppingCart = () => {
     }, 50); // Refresh every 5 seconds
 
     return () => clearInterval(interval);
-  }, []);
+  }, [cart]);
 
 
+  const changeScreen = useCallback(() => {
+    if (cart.arrPro.length === 0) {
+      return;
 
+    } else {
+      navigation.navigate("OrderDetails", { productList: cart.arrPro });
+
+    }
+  }, [cart, navigation]);
 
 
 
@@ -104,11 +112,13 @@ const ShoppingCart = () => {
         >
           {/* <Text style={styles.muaNgayText}>Mua ngay</Text> */}
         </Button>
+        {
+        }
         <Button
           title="Mua ngay"
           style={styles.muaNgaybtn}
           color={Color.colorLightgreen}
-          onPress={() => navigation.navigate("OrderDetails", { productList: cart.arrPro })}
+          onPress={changeScreen}
         >
           {/* <Text style={styles.muaNgayText}>Mua ngay</Text> */}
         </Button>
