@@ -8,6 +8,7 @@ import { FlatlistItemsComponent } from "../component";
 import { Cart, CartManager } from "../models";
 import { createOneData, getAllCartData, updateCartData, deleteOneCartData, createOneDiscount, createOneCartData } from "../apis/firebaseComponent";
 import { AppContext } from '../contexts/AppProvider';
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 
@@ -64,7 +65,7 @@ const ShoppingCart = () => {
 
   return (
 
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* slogan */}
       <View style={styles.sloganInner}>
         <Text style={styles.sloganText}>
@@ -159,7 +160,7 @@ const ShoppingCart = () => {
         </Pressable>
       </View>
 
-    </View >
+    </SafeAreaView >
 
   );
 };
@@ -167,7 +168,7 @@ const ShoppingCart = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    // marginTop: StatusBar.currentHeight || 0,
   },
 
   sloganInner: {

@@ -41,6 +41,7 @@ const OrderDetails = ({ route }) => {
   const [nameCus, setNameCus] = React.useState("");
   const [addressCus, setAddressCus] = React.useState("");
   const [phoneCus, setPhoneCus] = React.useState("");
+  const [note, setNote] = React.useState("");
 
   const [isPaymentOnDelivery, setIsPaymentOnDelivery] = React.useState(false);
 
@@ -91,17 +92,18 @@ const OrderDetails = ({ route }) => {
     // Tính toán và hiển thị thông tin thanh toán thành công
     const paymentAmount = totalPrice - discountAmount;
     Alert.alert('Đặt hàng thành công!', 'Đơn hàng sẽ sớm được giao')
-    console.log("Thanh toán thành công!");
-    console.log("Thông tin thanh toán:");
-    console.log("Họ và tên:", nameCus);
-    console.log("Địa chỉ:", addressCus);
-    console.log("Số điện thoại:", phoneCus);
-    console.log("Phương thức thanh toán:", isPaymentOnDelivery);
-    console.log("Số tiền phải thanh toán:", paymentAmount, "đ");
+    // console.log("Thanh toán thành công!");
+    // console.log("Thông tin thanh toán:");
+    // console.log("Họ và tên:", nameCus);
+    // console.log("Địa chỉ:", addressCus);
+    // console.log("Số điện thoại:", phoneCus);
+    // console.log("Phương thức thanh toán:", isPaymentOnDelivery);
+    // console.log("Số tiền phải thanh toán:", paymentAmount, "đ");
     // Alert.alert('Đặt hàng thành công!', 'Đơn hàng trị giá ' + { paymentAmount } + ' của anh/chị ' + { nameCus } + ' sẽ sớm được vận chuyển')
     // const alertt = 'Đơn hàng trị giá ' + { paymentAmount } + ' của anh/chị ' + { nameCus } + ' sẽ sớm được vận chuyển';
     // Alert.alert('Đặt hàng thành công!', alertt)
     deleteDatas();
+
   };
 
 
@@ -110,7 +112,7 @@ const OrderDetails = ({ route }) => {
       {/* Title của trang */}
       <View style={[styles.chiTietDathangInner]}>
         <Text style={styles.chiTietDatHangText}>Chi tiết đặt hàng</Text>
-        {console.log("cart", cart)}
+        {/* {console.log("cart", cart)} */}
         <Pressable onPress={() => navigation.navigate("ShoppingCart", { cartManager: cart })}>
           <Image
             style={styles.backIconBtn}
@@ -149,7 +151,8 @@ const OrderDetails = ({ route }) => {
                 color={Color.colorFirebrick}
                 onPress={applyDiscount} />
             </View>
-          </View><View style={styles.priceContainer}>
+          </View>
+            <View style={styles.priceContainer}>
               <View style={styles.priceLeft}>
                 <Text style={styles.priceText}>Tiền hàng:</Text>
                 <Text style={styles.priceText}>Mã giảm giá:</Text>
@@ -160,7 +163,8 @@ const OrderDetails = ({ route }) => {
                 <Text style={styles.priceText}>{discountAmount}đ</Text>
                 <Text style={styles.priceText}>{totalPrice - discountAmount}đ</Text>
               </View>
-            </View><View style={styles.paymentContainer}>
+            </View>
+            <View style={styles.paymentContainer}>
               <Text style={styles.paymentTitle}>1. Địa chỉ thanh toán</Text>
               <TextInput
                 style={styles.paymentInput}
@@ -178,6 +182,21 @@ const OrderDetails = ({ route }) => {
                 keyboardType="numeric"
                 value={phoneCus}
                 onChangeText={(text) => setPhoneCus(text)} />
+
+              <TextInput
+                style={{
+                  borderWidth: 1,
+                  borderColor: Color.colorBlack,
+                  backgroundColor: "white",
+                  borderRadius: 5,
+                  marginBottom: 10,
+                  paddingHorizontal: 10,
+                  height: 100,
+                }}
+                placeholder="Ghi chú"
+                value={note}
+                onChangeText={(text) => setNote(text)} />
+
             </View>
 
 

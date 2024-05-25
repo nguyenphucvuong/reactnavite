@@ -50,6 +50,10 @@ class CartManager {
     });
   };
 
+
+
+
+
   updateData({ id, username, name, color, price, quantity, size, img }) {
     const updates = {};
     updates["Cart/" + id] = {

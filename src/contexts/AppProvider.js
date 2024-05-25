@@ -10,7 +10,7 @@ export const AppProvider = ({ children }) => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            cartData.getAllData();
+            cartData.getAllData("admin1@gmail.com");
             discountData.getAllDiscount();
         }, 1000);
 

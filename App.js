@@ -2,7 +2,7 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { ShoppingCart, OrderDetails, BillScreen, HomeScreen, MainScreen } from "./src/screens"; // Adjust path as needed
+import { ShoppingCart, OrderDetails, BillScreen, HomeScreen, MainScreen, BillDetails } from "./src/screens"; // Adjust path as needed
 import { AppProvider } from "./src/contexts/AppProvider";
 
 const Stack = createNativeStackNavigator();
@@ -31,6 +31,7 @@ const App = () => {
           <Stack.Screen name="ShoppingCart" component={ShoppingCart} />
           <Stack.Screen name="OrderDetails" component={OrderDetails} />
           <Stack.Screen name="BillScreen" component={BillScreen} />
+          <Stack.Screen name="BillDetails" component={BillDetails} />
         </Stack.Navigator>
       </NavigationContainer>
     </AppProvider>
