@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import { StyleSheet, View, Pressable, Text, StatusBar, FlatList, ScrollView, Button } from "react-native";
 import { Image } from "expo-image";
 import { useNavigation } from "@react-navigation/native";
@@ -7,7 +7,7 @@ import { appInfo } from "../constains/appInfo";
 import { FlatlistItemsComponent } from "../component";
 import { Cart, CartManager } from "../models";
 import { createOneData, getAllCartData, updateCartData, deleteOneCartData, createOneDiscount, createOneCartData } from "../apis/firebaseComponent";
-
+import { AppContext } from '../contexts/AppProvider';
 
 
 
@@ -15,17 +15,20 @@ import { createOneData, getAllCartData, updateCartData, deleteOneCartData, creat
 //   cart.addProduct(item.id, item.name, item.color, item.price, item.soLuong, item.size, item.img);
 // })
 
-const cart = new CartManager();
+// let cart = new CartManager();
 
 
 
-const ShoppingCart = (cart) => {
+const ShoppingCart = () => {
+  // console.log("first cart", cartManager.arrPro)
+  const cart = useContext(AppContext).cartData;
+
   const navigation = useNavigation();
   const [arrList, setArrList] = useState([]);
 
 
 
-  const handleCreateOneData = () => {
+  const handleCreateOneData = (cartManager) => {
     createOneCartData({
       username: 'admin@gmail.com',
       name: 'Áo thun',
@@ -46,10 +49,10 @@ const ShoppingCart = (cart) => {
   useEffect(() => {
 
     const interval = setInterval(() => {
-      cart.getAllData();
+      // cart.getAllData();
       setArrList(cart.arrPro);
 
-    }, 1000); // Refresh every 5 seconds
+    }, 50); // Refresh every 5 seconds
 
     return () => clearInterval(interval);
   }, []);

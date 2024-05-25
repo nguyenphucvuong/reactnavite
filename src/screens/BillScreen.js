@@ -6,7 +6,10 @@ import React from 'react'
 const BillScreen = () => {
 
     return (
-        <View>
+        <View style={{
+            flex: 1,
+            backgroundColor: "red"
+        }}>
             <Text>BillScreen</Text>
         </View>
     )

@@ -3,7 +3,10 @@ import React from 'react'
 
 const WishListScreen = () => {
     return (
-        <View>
+        <View style={{
+            flex: 1,
+            backgroundColor: "green"
+        }}>
             <Text>WishListScreen</Text>
         </View>
     )

@@ -110,7 +110,8 @@ const OrderDetails = ({ route }) => {
       {/* Title của trang */}
       <View style={[styles.chiTietDathangInner]}>
         <Text style={styles.chiTietDatHangText}>Chi tiết đặt hàng</Text>
-        <Pressable onPress={() => navigation.navigate("ShoppingCart")}>
+        {console.log("cart", cart)}
+        <Pressable onPress={() => navigation.navigate("ShoppingCart", { cartManager: cart })}>
           <Image
             style={styles.backIconBtn}
             contentFit="cover"
@@ -177,7 +178,10 @@ const OrderDetails = ({ route }) => {
                 keyboardType="numeric"
                 value={phoneCus}
                 onChangeText={(text) => setPhoneCus(text)} />
-            </View><View style={styles.paymentMethodContainer}>
+            </View>
+
+
+            <View style={styles.paymentMethodContainer}>
               <View style={styles.paymentMethodInner}>
                 <Text style={styles.paymentTitle}>2. Phương thức thanh toán</Text>
                 <View style={styles.checkboxContainer}>
