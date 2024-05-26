@@ -9,13 +9,14 @@ const cartManager = new CartManager();
 const discountManager = new DiscountManager();
 cartManager.getAllData();
 discountManager.getAllDiscount();
-const MainScreen = () => {
+const MainScreen = (screenid) => {
     const SHOPPING_CART = "SHOPPING_CART";
     const WISHLIST_SCREEN = "WISHLIST_SCREEN";
     const BILL_SCREEN = "BILL_SCREEN";
     const HOME_SCREEN = "HOME_SCREEN";
 
     const [screen, setScreen] = useState(HOME_SCREEN);
+
 
     return (
 

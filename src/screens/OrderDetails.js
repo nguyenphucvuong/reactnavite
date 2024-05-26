@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import { StyleSheet, View, Pressable, Text, FlatList, TextInput, Button, StatusBar, ScrollView, Alert } from "react-native"; // Import FlatList
 import { Image } from "expo-image";
 import { useNavigation } from "@react-navigation/native";
@@ -6,8 +6,8 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Color, FontFamily, FontSize, Border } from "../../GlobalStyles";
 import { FlatlistItemsComponent } from "../component";
 import { CartManager, Cart, Discount, DiscountManager } from "../models"; // Import lớp quản lý sản phẩm
-import { deleteOneCartData, createOneBill } from "../apis/firebaseComponent";
-
+import { deleteOneCartData, createOneBill, deleteOneDiscountData } from "../apis/firebaseComponent";
+import { AppContext } from '../contexts/AppProvider';
 
 
 
@@ -17,17 +17,19 @@ const OrderDetails = ({ route }) => {
   const navigation = useNavigation();
 
   //dữ liệu tĩnh
-  const cart = new CartManager();
-  const qlDiscount = new DiscountManager();
+  const cart = useContext(AppContext).cartData;
+  const qlDiscount = useContext(AppContext).discountData;
   ////dữ liệu giảm giá tĩnh
   qlDiscount.getAllDiscount();
+  const [arrList, setArrList] = useState([]);
+
 
   let totalPrice = cart.getTotalValue();
 
 
   //lấy dữ liệu từ trang trước đó
-  const { productList } = route.params;
-  cart.arrPro = productList;
+  // const { productList } = route.params;
+  // cart.arrPro = productList;
   totalPrice = cart.getTotalValue();
 
 
@@ -45,9 +47,13 @@ const OrderDetails = ({ route }) => {
 
   const [isPaymentOnDelivery, setIsPaymentOnDelivery] = React.useState(false);
 
+
+
   // const DeleteDatas = () => {
   //   deleteDatas();
   // }
+
+
 
   //hàm xử lý khi ấn vào áp dụng mã giảm giá
   const applyDiscount = () => {
@@ -55,11 +61,11 @@ const OrderDetails = ({ route }) => {
       console.log("Vui lòng nhập mã giảm giá.");
       return;
     }
+    const discountDT = qlDiscount.arrDiscount.find(discount => discount.code === discountCode);
 
-    const discountDT = qlDiscount.discounts.find(discount => discount.code === discountCode);
-    const discount = new Discount(discountDT.id, discountDT.code, discountDT.percent);
+    const discount = new Discount(discountDT.id, discountDT.code, discountDT.percentage, discountDT.status);
 
-    if (discount) {
+    if (discount && discount.status === "active") {
       totalPrice = cart.getTotalValue();
 
       const percentage = discount.percentage;
@@ -106,7 +112,7 @@ const OrderDetails = ({ route }) => {
     createOneBill({
       username: "admin1@gmail.com",
       cart: cart.arrPro,
-      total: totalPrice,
+      total: totalPrice - discountAmount,
       discount: discountAmount,
       status: "doing",
       address: addressCus,
@@ -118,12 +124,27 @@ const OrderDetails = ({ route }) => {
       console.log(item.id)
     });
 
-
+    const discountDT = qlDiscount.arrDiscount.find(discount => discount.code === discountCode);
+    const discount = new Discount(discountDT.id, discountDT.code, discountDT.percentage, discountDT.status);
+    if (discount && discount.status === "active") {
+      deleteOneDiscountData(discount.id);
+    }
+    navigation.goBack();
 
 
 
   };
 
+  useEffect(() => {
+
+    const interval = setInterval(() => {
+      // cart.getAllData();
+      setArrList(cart.arrPro);
+
+    }, 100); // Refresh every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [cart]);
 
   return (
     <View style={styles.container}>
@@ -131,7 +152,7 @@ const OrderDetails = ({ route }) => {
       <View style={[styles.chiTietDathangInner]}>
         <Text style={styles.chiTietDatHangText}>Chi tiết đặt hàng</Text>
         {/* {console.log("cart", cart)} */}
-        <Pressable onPress={() => navigation.navigate("ShoppingCart", { cartManager: cart })}>
+        <Pressable onPress={() => navigation.goBack()}>
           <Image
             style={styles.backIconBtn}
             contentFit="cover"
@@ -148,7 +169,7 @@ const OrderDetails = ({ route }) => {
       {/* flatlist danh sách sản phẩm sau khi ấn mua ngay từ Shopping cart */}
       <View style={styles.flatcontainer}>
         <FlatList
-          data={cart.arrPro}
+          data={arrList}
           renderItem={({ item }) => <FlatlistItemsComponent isDetail={true} item={item} />}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.flatListContainer}
@@ -209,7 +230,8 @@ const OrderDetails = ({ route }) => {
                   borderRadius: 5,
                   marginBottom: 10,
                   paddingHorizontal: 10,
-                  height: 100,
+                  height: "auto",
+                  minHeight: 100,
                 }}
                 placeholder="Ghi chú"
                 value={note}

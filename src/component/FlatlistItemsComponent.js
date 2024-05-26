@@ -4,15 +4,16 @@ import { appInfo } from "../constains/appInfo";
 // import { FlatList } from 'react-native-gesture-handler';
 import { Image } from "expo-image";
 import { Color, FontSize, Border, FontFamily } from "../../GlobalStyles";
-
-
+import { BillStatusComponent, AddressViewComponent } from "./";
+import { useNavigation } from "@react-navigation/native";
 import { createOneCartData, getAllCartData, updateCartData, deleteOneCartData } from "../apis/firebaseComponent";
 
 
 
 
-const FlatlistItemsComponent = ({ isDetail, item, handleRemoveProduct, isBill }) => {
+const FlatlistItemsComponent = ({ isDetail, item, handleRemoveProduct, isBill, statusBill, isBillDetails }) => {
     const [quantity, setQuantity] = useState(item.quantity);
+    const navigation = useNavigation();
 
     const decreaseQuantity = () => {
         if (quantity > 1) {
@@ -39,12 +40,9 @@ const FlatlistItemsComponent = ({ isDetail, item, handleRemoveProduct, isBill })
     };
 
 
-    if (isBill) {
-        return (
-            <>
 
-            </>
-        )
+    const handlePress = () => {
+        navigation.navigate("MainScreen");
     }
 
 
@@ -54,56 +52,7 @@ const FlatlistItemsComponent = ({ isDetail, item, handleRemoveProduct, isBill })
 
     // OrderDetails functions 
     if (isBill) {
-        return (
-            <View style={{
-                height: "auto",
-                flexDirection: "row",
-                alignItems: "center",
-                marginBottom: 20,
-                borderRadius: 10,
-                backgroundColor: "white",
-                shadowColor: "black",
-                shadowOffset: {
-                    width: 0,
-                    height: 2,
-                },
-                shadowOpacity: 0.25,
-                shadowRadius: 3.84,
-                elevation: 10,
-            }}>
-                <View style={{
-                    flex: 1,
-                    padding: 10,
-                }}>
-                    <Text style={{
-                        fontSize: FontSize.size_base,
-
-                        marginBottom: 5,
-                    }}>{item.name}</Text>
-                    <Text style={{
-                        fontSize: 12,
-                        color: Color.colorDarkgray_200,
-                    }}>Phân loại: {item.color}, {item.size}</Text>
-                    <Text style={{
-                        fontSize: 12,
-                        color: Color.colorDarkgray_200,
-                    }}>Số lượng: {item.quantity}</Text>
-                    <Text style={{
-                        fontSize: 15,
-                        color: "red",
-                    }}>Giá: {item.quantity * item.price}đ</Text>
-                </View>
-                <Image style={{
-                    width: 150,
-                    height: "95%",
-                    // borderTopRightRadius: 10,
-                    // borderBottomRightRadius: 10,
-                    borderRadius: 100,
-                }} source={{ uri: item.img }} />
-            </View>
-        )
-    } else {
-        if (isDetail) {
+        if (isBillDetails) {
             return (
                 <View style={{
                     height: "auto",
@@ -151,6 +100,66 @@ const FlatlistItemsComponent = ({ isDetail, item, handleRemoveProduct, isBill })
                         borderRadius: 100,
                     }} source={{ uri: item.img }} />
                 </View>
+            )
+        } else {
+            return (
+                <Pressable onPress={handlePress}>
+                    <BillStatusComponent id={item.id} status={item.status} price={item.total} />
+                </Pressable>
+            )
+        }
+
+    } else {
+        if (isDetail) {
+            return (
+
+                <View style={{
+                    height: "auto",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 20,
+                    borderRadius: 10,
+                    backgroundColor: "white",
+                    shadowColor: "black",
+                    shadowOffset: {
+                        width: 0,
+                        height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+                    elevation: 10,
+                }}>
+                    <View style={{
+                        flex: 1,
+                        padding: 10,
+                    }}>
+                        <Text style={{
+                            fontSize: FontSize.size_base,
+
+                            marginBottom: 5,
+                        }}>{item.name}</Text>
+                        <Text style={{
+                            fontSize: 12,
+                            color: Color.colorDarkgray_200,
+                        }}>Phân loại: {item.color}, {item.size}</Text>
+                        <Text style={{
+                            fontSize: 12,
+                            color: Color.colorDarkgray_200,
+                        }}>Số lượng: {item.quantity}</Text>
+                        <Text style={{
+                            fontSize: 15,
+                            color: "red",
+                        }}>Giá: {item.quantity * item.price}đ</Text>
+                    </View>
+                    <Image style={{
+                        width: 150,
+                        height: "95%",
+                        // borderTopRightRadius: 10,
+                        // borderBottomRightRadius: 10,
+                        borderRadius: 100,
+                    }} source={{ uri: item.img }} />
+                </View>
+
             )
         } else {
             return (

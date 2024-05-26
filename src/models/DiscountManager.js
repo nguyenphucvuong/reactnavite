@@ -5,16 +5,16 @@ import { db } from '../../firebase.config'
 
 class DiscountManager {
     constructor() {
-        this.discounts = [];
+        this.arrDiscount = [];
     }
 
     getAllDiscount = () => {
         const discountRef = ref(db, "Discount/");
         onValue(discountRef, (snapshot) => {
             const data = snapshot.val();
-            this.discounts = Object.values(data || {});
-            // console.log(this.discounts)
-            return this.discounts;
+            this.arrDiscount = Object.values(data || {});
+            // console.log(this.arrDiscount)
+            return this.arrDiscount;
         });
     };
 

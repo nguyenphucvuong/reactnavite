@@ -30,8 +30,14 @@ const ShoppingCart = () => {
 
 
   const handleCreateOneData = (cartManager) => {
+    // createOneDiscount({
+    //   code: 'ABC',
+    //   percentage: 50,
+    //   status: 'active',
+    // });
+
     createOneCartData({
-      username: 'admin@gmail.com',
+      username: 'admin1@gmail.com',
       name: 'Áo thun',
       color: 'Đen',
       price: 100000,
@@ -53,7 +59,7 @@ const ShoppingCart = () => {
       // cart.getAllData();
       setArrList(cart.arrPro);
 
-    }, 50); // Refresh every 5 seconds
+    }, 100); // Refresh every 5 seconds
 
     return () => clearInterval(interval);
   }, [cart]);
@@ -64,7 +70,7 @@ const ShoppingCart = () => {
       return;
 
     } else {
-      navigation.navigate("OrderDetails", { productList: cart.arrPro });
+      navigation.navigate("OrderDetails");
 
     }
   }, [cart, navigation]);
@@ -104,16 +110,8 @@ const ShoppingCart = () => {
 
       {/* Nút mua ngay dưới cùng */}
       <View style={styles.btnContainer}>
-        <Button
-          title="test"
-          style={styles.muaNgaybtn}
-          color={"red"}
-          onPress={() => handleCreateOneData()}
-        >
-          {/* <Text style={styles.muaNgayText}>Mua ngay</Text> */}
-        </Button>
-        {
-        }
+
+
         <Button
           title="Mua ngay"
           style={styles.muaNgaybtn}
@@ -127,7 +125,7 @@ const ShoppingCart = () => {
 
 
       {/* Menu các page */}
-      <View style={styles.menuContainer}>
+      {/* <View style={styles.menuContainer}>
         <Pressable
           style={styles.homePage}
         // onPress={() => navigation.navigate("HomePage")}
@@ -168,17 +166,21 @@ const ShoppingCart = () => {
             source={require("../../assets/message-fill.png")}
           />
         </Pressable>
-      </View>
+      </View> */}
 
     </SafeAreaView >
 
   );
 };
+console.log(appInfo.widthWindows)
+console.log(appInfo.heightWindows)
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     // marginTop: StatusBar.currentHeight || 0,
+    height: "100%",
+    maxHeight: appInfo.heightWindows - 40,
   },
 
   sloganInner: {
@@ -217,15 +219,14 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   flatcontainer: {
-    height: "75%",
+    maxHeight: "83%"
   },
   btnContainer: {
     position: 'absolute',
-    bottom: 40,
     width: '100%',
+    bottom: -30,
     // backgroundColor: Color.colorLightgreen,
-    height: 40,
-    justifyContent: 'center',
+
   },
 
 
@@ -235,12 +236,7 @@ const styles = StyleSheet.create({
     // color: Color.colorLightgreen,
     // backgroundColor: Color.colorLightgreen,
   },
-  muaNgayText: {
-    textAlign: "center",
-    color: Color.colorWhite,
-    fontSize: FontSize.size_base,
-    // fontFamily: FontFamily.interBold,
-  },
+
 
   // vBtnMuaNgay: {
   //   backgroundColor: Color.colorLightgreen,
@@ -248,41 +244,12 @@ const styles = StyleSheet.create({
   //   justifyContent: 'center',
   // },
 
-  menuContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    height: 40,
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "white",
-  },
-  homePage: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  shoppingCartPage: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  wishListPage: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  billPage: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  iconMenu: {
-    width: 24,
-    height: 24,
-  },
+
+
+
+
+
+
 });
 
 export default ShoppingCart;
