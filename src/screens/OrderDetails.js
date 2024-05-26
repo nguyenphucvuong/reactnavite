@@ -38,6 +38,8 @@ const OrderDetails = ({ route }) => {
   //mã giảm giá
   const [discountCode, setDiscountCode] = React.useState("");
   const [discountAmount, setDiscountAmount] = React.useState(0);
+  const [discountId, setDiscountId] = React.useState("");
+
 
   //thông tin địa chỉ
   const [nameCus, setNameCus] = React.useState("");
@@ -63,11 +65,19 @@ const OrderDetails = ({ route }) => {
     }
     const discountDT = qlDiscount.arrDiscount.find(discount => discount.code === discountCode);
 
+    // Check if discountDT is undefined
+    if (!discountDT) {
+      console.log("Mã giảm giá không hợp lệ");
+      totalPrice = cart.getTotalValue();
+      setDiscountAmount(0);
+      return;
+    }
+
     const discount = new Discount(discountDT.id, discountDT.code, discountDT.percentage, discountDT.status);
 
     if (discount && discount.status === "active") {
       totalPrice = cart.getTotalValue();
-
+      setDiscountId(discount.id);
       const percentage = discount.percentage;
       console.log("pet", discount.percentage)
       const discountValue = totalPrice * percentage / 100;
@@ -111,6 +121,7 @@ const OrderDetails = ({ route }) => {
 
     createOneBill({
       username: "admin1@gmail.com",
+      name: nameCus,
       cart: cart.arrPro,
       total: totalPrice - discountAmount,
       discount: discountAmount,
@@ -124,11 +135,11 @@ const OrderDetails = ({ route }) => {
       console.log(item.id)
     });
 
-    const discountDT = qlDiscount.arrDiscount.find(discount => discount.code === discountCode);
-    const discount = new Discount(discountDT.id, discountDT.code, discountDT.percentage, discountDT.status);
-    if (discount && discount.status === "active") {
-      deleteOneDiscountData(discount.id);
+    if (discountId !== "") {
+      deleteOneDiscountData(discountId);
+
     }
+
     navigation.goBack();
 
 

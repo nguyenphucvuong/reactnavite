@@ -116,7 +116,7 @@ const createOneDiscount = ({ code, percentage, status }) => {
 }
 
 //Bill
-const createOneBill = ({ username, cart, total, discount, status, address, phone, note }) => {
+const createOneBill = ({ username, name, cart, total, discount, status, address, phone, note }) => {
     const key = push(child(dbRef, 'Bill/')).key;
 
     const cartObject = cart.reduce((acc, item) => {
@@ -127,6 +127,7 @@ const createOneBill = ({ username, cart, total, discount, status, address, phone
     const setDB = set(child(dbRef, "Bill/" + key), {
         id: key,
         username: username,
+        name: name,
         Cart: cartObject,
         total: total,
         discount: discount,

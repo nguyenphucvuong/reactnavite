@@ -10,6 +10,7 @@ import { CartManager, Cart, Discount, DiscountManager } from "../models"; // Imp
 import { deleteOneCartData, createOneBill } from "../apis/firebaseComponent";
 import { AppContext } from '../contexts/AppProvider';
 
+import { appInfo } from '../constains/appInfo';
 
 
 
@@ -67,8 +68,11 @@ const styles = StyleSheet.create({
     },
     flatListContainer: {
         flexGrow: 1,
-        paddingHorizontal: 20,
+        paddingHorizontal: 15,
         paddingTop: 20,
+        paddingBottom: 40,
         backgroundColor: "white",
+        height: "auto",
+
     },
 })

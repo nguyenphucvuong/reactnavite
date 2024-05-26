@@ -172,8 +172,7 @@ const ShoppingCart = () => {
 
   );
 };
-console.log(appInfo.widthWindows)
-console.log(appInfo.heightWindows)
+
 
 const styles = StyleSheet.create({
   container: {

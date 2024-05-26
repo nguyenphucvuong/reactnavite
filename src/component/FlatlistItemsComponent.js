@@ -1,4 +1,4 @@
-import { StyleSheet, View, Pressable, Text, StatusBar, FlatList, ScrollView, Button } from "react-native";
+import { StyleSheet, View, Pressable, Text, StatusBar, FlatList, ScrollView, Button, Touchable } from "react-native";
 import React, { useState, useEffect } from "react";
 import { appInfo } from "../constains/appInfo";
 // import { FlatList } from 'react-native-gesture-handler';
@@ -42,7 +42,8 @@ const FlatlistItemsComponent = ({ isDetail, item, handleRemoveProduct, isBill, s
 
 
     const handlePress = () => {
-        navigation.navigate("MainScreen");
+        console.log(item);
+        navigation.navigate("BillDetails", { item: item });
     }
 
 

@@ -1,27 +1,42 @@
-import * as React from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import { StyleSheet, View, Pressable, Text, FlatList, TextInput, Button, StatusBar, ScrollView, Alert } from "react-native"; // Import FlatList
 import { Image } from "expo-image";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { Color, FontSize } from "../../GlobalStyles";
-import { FlatlistItemsComponent } from "../component";
+import { FlatlistItemsComponent, BillStatusComponent, AddressViewComponent } from "../component";
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-const BillDetails = () => {
+const BillDetails = ({ }) => {
     const navigation = useNavigation();
+    const route = useRoute(); // Use useRoute to get the route object
+    const { item } = route.params; // Extract item from route.params
 
-    //thông tin địa chỉ
-    const [nameCus, setNameCus] = React.useState("");
-    const [addressCus, setAddressCus] = React.useState("");
-    const [phoneCus, setPhoneCus] = React.useState("");
-    const [note, setNote] = React.useState("");
+    console.log("item", item);
+    console.log(item.note);
+    const cart = item.Cart;
+    const cartItems = Object.values(cart);
+    console.log("Cart Items:", cartItems);
 
-    const [isPaymentOnDelivery, setIsPaymentOnDelivery] = React.useState(false);
+    const [status, setStatus] = useState("doing");
+    const [note, setNote] = useState(item.note || "Ghi chú"); // Initialize note state with item.note or "Ghi chú"
+    useEffect(() => {
+        if (item.status === "done") {
+            setStatus("Đã hoàn thành");
+
+        } else if (item.status === "fail") {
+            setStatus("Đã hủy");
+        } else {
+            setStatus("Đang xử lý");
+        }
+
+    }, []);
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={[styles.chiTietDathangInner]}>
                 <Text style={styles.chiTietDatHangText}>Thông tin đơn hàng</Text>
 
-                <Pressable onPress={() => navigation.navigate("ShoppingCart")}>
+                <Pressable onPress={() => navigation.goBack()}>
                     <Image
                         style={styles.backIconBtn}
                         contentFit="cover"
@@ -30,168 +45,183 @@ const BillDetails = () => {
                 </Pressable>
             </View>
 
-
-            {/* Flatlist */}
-            <View>
-                <FlatList
-                    contentContainerStyle={styles.flatListContainer}
-                    ListHeaderComponent={
-                        <>
-                            {/* BillStatusComponent */}
-                            <View style={{
-                                width: "100%",
-                                height: 120,
-                                flexDirection: "row",
-                                backgroundColor: "#84ED89",
-                                marginBottom: "2%",
-                                shadowColor: "black",
-                                shadowOffset: {
-                                    width: 0,
-                                    height: 5,
-                                },
-                                shadowOpacity: 0.25,
-                                shadowRadius: 3.84,
-                                elevation: 10,
-                            }}>
-                                <View style={{
-                                    justifyContent: "center",
-                                    width: "85%",
-                                }}>
-                                    <Text style={{
-                                        fontSize: 20,
-                                        color: "black",
-                                        marginLeft: "5%",
-                                        marginBottom: "2%",
-                                    }}>
-                                        Đơn hàng:
-                                    </Text>
-                                    <Text style={{
-                                        fontSize: 20,
-                                        color: "black",
-                                        marginLeft: "5%",
-                                        marginBottom: "2%",
-                                    }}>
-                                        Trạng thái:
-                                    </Text>
-                                    <Text style={{
-                                        fontSize: 20,
-                                        color: "black",
-                                        marginLeft: "5%",
-                                        marginBottom: "2%",
-                                    }}>
-                                        Tổng tiền:
-                                    </Text>
-                                </View>
-
-                                <Image style={{
-                                    width: "15%",
-                                    height: 40,
-                                    width: 40,
-                                    alignSelf: "center",
-                                }} source={require("../../assets/billdone.png")} />
-
-                            </View>
-
-                            {/* AddressViewComponent */}
-                            <View style={{
-                                width: "100%",
-                                height: 150,
-                                justifyContent: "center",
-                                borderRadius: 10,
-                                backgroundColor: "white",
-                                shadowColor: "black",
-                                shadowOffset: {
-                                    width: 0,
-                                    height: 5,
-                                },
-                                shadowOpacity: 0.25,
-                                shadowRadius: 3.84,
-                                elevation: 10,
-                            }}>
-                                <View style={{
+            <View style={{
+                width: "100%",
+                height: "100%",
+                backgroundColor: "white",
+            }}>
+                {/* Flatlist */}
+                <View>
+                    <FlatList
+                        data={cartItems}
+                        renderItem={({ item }) => <FlatlistItemsComponent isDetail={true} item={item} />}
+                        keyExtractor={(item) => item.id}
+                        contentContainerStyle={styles.flatListContainer}
+                        ListHeaderComponent={
+                            <>
+                                {/* BillStatusComponent */}
+                                {/* <View style={{
+                                    width: "100%",
+                                    height: 120,
                                     flexDirection: "row",
-                                    marginLeft: "5%",
+
+                                    backgroundColor: "#84ED89",
+                                    marginBottom: "2%",
+                                    shadowColor: "black",
+                                    shadowOffset: {
+                                        width: 0,
+                                        height: 5,
+                                    },
+                                    shadowOpacity: 0.25,
+                                    shadowRadius: 3.84,
+                                    elevation: 10,
                                 }}>
-                                    <Image style={{
-                                        height: 20,
-                                        width: 20,
-                                    }} source={require("../../assets/Pin_alt.png")} />
-                                    <Text style={{
-                                        fontSize: 20,
-                                        color: "black",
-                                        marginLeft: "2%",
-                                        marginBottom: "2%",
-                                        fontWeight: "bold",
+                                    <View style={{
+                                        justifyContent: "center",
+                                        width: "85%",
                                     }}>
+                                        <Text style={{
+                                            fontSize: 20,
+                                            color: "black",
+                                            marginLeft: "5%",
+                                            marginBottom: "2%",
+                                        }}>
+                                            Đơn hàng: {item.id}
+                                        </Text>
+                                        <Text style={{
+                                            fontSize: 20,
+                                            color: "black",
+                                            marginLeft: "5%",
+                                            marginBottom: "2%",
+                                        }}>
+                                            Trạng thái: {status}
+                                        </Text>
+                                        <Text style={{
+                                            fontSize: 20,
+                                            color: "black",
+                                            marginLeft: "5%",
+                                            marginBottom: "2%",
+                                        }}>
+                                            Tổng tiền:
+                                        </Text>
+                                    </View>
 
-                                        Địa chỉ nhận hàng
-                                    </Text>
-                                </View>
+                                    <Image style={{
+                                        width: "15%",
+                                        height: 40,
+                                        width: 40,
+                                        alignSelf: "center",
+                                    }} source={require("../../assets/billdone.png")} />
 
-                                <Text style={{
-                                    fontSize: 15,
-                                    color: "gray",
-                                    marginLeft: "5%",
-                                    marginBottom: "2%",
-                                }}>
-                                    Họ tên:
-                                </Text>
-                                <Text style={{
-                                    fontSize: 15,
-                                    color: "gray",
-                                    marginLeft: "5%",
-                                    marginBottom: "2%",
-                                }}>
-                                    SDT:
-                                </Text>
-                                <Text style={{
-                                    fontSize: 15,
-                                    color: "gray",
-                                    marginLeft: "5%",
-                                    marginBottom: "2%",
-                                }}>
-                                    Địa chỉ:
-                                </Text>
+                                </View> */}
 
-                            </View>
-                        </>
-                    }
-                    ListFooterComponent={
-                        <>
-                            <View style={styles.priceContainer}>
-                                <View style={styles.priceLeft}>
-                                    <Text style={styles.priceText}>Tiền hàng:</Text>
-                                    <Text style={styles.priceText}>Mã giảm giá:</Text>
-                                    <Text style={styles.priceText}>Tổng tiền:</Text>
-                                </View>
-                                <View style={styles.priceRight}>
-                                    <Text style={styles.priceText}>{ }đ</Text>
-                                    <Text style={styles.priceText}>{ }đ</Text>
-                                    <Text style={styles.priceText}>{ }đ</Text>
-                                </View>
-                            </View>
-                            <Text
-                                style={{
-                                    borderWidth: 1,
-                                    borderColor: Color.colorBlack,
+                                <BillStatusComponent id={item.id} status={item.status} price={item.total} />
+
+                                {/* AddressViewComponent */}
+                                {/* <View style={{
+                                    width: "100%",
+                                    height: 150,
+                                    justifyContent: "center",
+                                    marginBottom: "5%",
+                                    borderRadius: 10,
                                     backgroundColor: "white",
-                                    borderRadius: 5,
-                                    marginTop: 10,
-                                    paddingHorizontal: 10,
-                                    height: "auto",
-                                    minHeight: 100,
+                                    shadowColor: "black",
+                                    shadowOffset: {
+                                        width: 0,
+                                        height: 5,
+                                    },
+                                    shadowOpacity: 0.25,
+                                    shadowRadius: 3.84,
+                                    elevation: 10,
+                                }}>
+                                    <View style={{
+                                        flexDirection: "row",
+                                        marginLeft: "5%",
+                                    }}>
+                                        <Image style={{
+                                            height: 20,
+                                            width: 20,
+                                        }} source={require("../../assets/Pin_alt.png")} />
+                                        <Text style={{
+                                            fontSize: 20,
+                                            color: "black",
+                                            marginLeft: "2%",
+                                            marginBottom: "2%",
+                                            fontWeight: "bold",
+                                        }}>
 
-                                }}
-                                placeholder="Ghi chú"
-                                value={note}
-                                onChangeText={(text) => setNote(text)} >
+                                            Địa chỉ nhận hàng
+                                        </Text>
+                                    </View>
 
-                                Ghi chú
-                            </Text>
-                        </>
+                                    <Text style={{
+                                        fontSize: 15,
+                                        color: "gray",
+                                        marginLeft: "5%",
+                                        marginBottom: "2%",
+                                    }}>
+                                        Họ tên:
+                                    </Text>
+                                    <Text style={{
+                                        fontSize: 15,
+                                        color: "gray",
+                                        marginLeft: "5%",
+                                        marginBottom: "2%",
+                                    }}>
+                                        SDT:
+                                    </Text>
+                                    <Text style={{
+                                        fontSize: 15,
+                                        color: "gray",
+                                        marginLeft: "5%",
+                                        marginBottom: "2%",
+                                    }}>
+                                        Địa chỉ:
+                                    </Text>
 
-                    } />
+                                </View> */}
+                                <AddressViewComponent name={item.name} phone={item.phone} address={item.address} />
+
+                            </>
+                        }
+                        ListFooterComponent={
+                            <>
+                                <View style={styles.priceContainer}>
+                                    <View style={styles.priceLeft}>
+                                        <Text style={styles.priceText}>Tiền hàng:</Text>
+                                        <Text style={styles.priceText}>Mã giảm giá:</Text>
+                                        <Text style={styles.priceText}>Tổng tiền:</Text>
+                                    </View>
+                                    <View style={styles.priceRight}>
+                                        <Text style={styles.priceText}>{item.total + item.discount}đ</Text>
+                                        <Text style={styles.priceText}>{item.discount}đ</Text>
+                                        <Text style={styles.priceText}>{item.total}đ</Text>
+                                    </View>
+                                </View>
+                                <Text
+                                    style={{
+                                        borderWidth: 1,
+                                        borderColor: Color.colorBlack,
+                                        backgroundColor: "white",
+                                        borderRadius: 5,
+                                        marginTop: 10,
+                                        paddingHorizontal: 10,
+                                        height: "auto",
+                                        minHeight: 100,
+
+                                    }}
+                                    placeholder="Ghi chú"
+                                    value={note}
+                                    onChangeText={(text) => setNote(text)} >
+                                    {note}
+
+                                </Text>
+                            </>
+
+                        } />
+                </View>
             </View>
+
 
 
 
@@ -206,6 +236,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Color.colorWhite,
+        backgroundColor: Color.colorPink,
+
     },
 
     chiTietDathangInner: {
@@ -229,12 +261,12 @@ const styles = StyleSheet.create({
         left: "5%",
     },
     flatListContainer: {
-        // flexGrow: 1,
-        // marginTop: 10,
-        // paddingHorizontal: 20,
-        // paddingTop: 20,
-        // paddingBottom: 10,
-        // backgroundColor: "white",
+        flexGrow: 1,
+        marginTop: 10,
+        paddingHorizontal: 20,
+        paddingTop: 20,
+        paddingBottom: 100,
+        backgroundColor: "white",
     },
     priceContainer: {
         marginTop: "2%",
